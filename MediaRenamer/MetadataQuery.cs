@@ -13,16 +13,15 @@ namespace MediaRenamer {
         public static Dictionary<string, string> MetaQuery(FileSystemInfo file, bool filetype) {
             try {
                 Dictionary<string, string> dictResult;
-                Dictionary<string, string> dictDt;
+                Dictionary<string, string> dictDatetime;
                 Dictionary<string, string> dictGps;
                 switch (filetype) {
                     case true:
-                        dictResult = new Dictionary<string, string> {
-                                                                        {"type", "Pic"}
-                                                                    };
+                        // file type is image
+                        dictResult = new Dictionary<string, string> {{"type", "Pic"}};
                         var directories = ReadMetadata(file.FullName);
-                        dictDt = PicDtQuery(directories);
-                        foreach (var dt in dictDt) {
+                        dictDatetime = PicDtQuery(directories);
+                        foreach (var dt in dictDatetime) {
                             dictResult.Add(dt.Key, dt.Value);
                         }
 
@@ -37,11 +36,10 @@ namespace MediaRenamer {
 
                         return dictResult;
                     case false:
-                        dictResult = new Dictionary<string, string> {
-                                                                        {"type", "Vid"}
-                                                                    };
-                        dictDt = VidDtQuery(file);
-                        foreach (var dt in dictDt) {
+                        // file type is video
+                        dictResult = new Dictionary<string, string> {{"type", "Vid"}};
+                        dictDatetime = VidDtQuery(file);
+                        foreach (var dt in dictDatetime) {
                             dictResult.Add(dt.Key, dt.Value);
                         }
 
