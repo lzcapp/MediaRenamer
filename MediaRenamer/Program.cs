@@ -14,24 +14,19 @@ namespace MediaRenamer {
             Console.WriteLine(">> Tool for Renaming multi-media files.\n");
 
             Console.WriteLine(@"Please Input the Folder Path:");
-            Console.WriteLine(@"[d] for default folder (E:\DCIM\)");
             string dirInput;
             do {
                 dirInput = Console.ReadLine();
             } while (string.IsNullOrWhiteSpace(dirInput));
 
-            var isDefaultDir = dirInput == "d";
-
             try {
-                var diDefault = new DirectoryInfo(@"D:\DCIM\");
-                var diPath = isDefaultDir ? diDefault : new DirectoryInfo(dirInput);
-
+                var diPath = new DirectoryInfo(dirInput);
                 var fileList = new List<FileSystemInfo>();
                 fileList = GetFiles(diPath, fileList);
                 foreach (var file in fileList) {
                     FileProcess(file);
                 }
-            } catch (DirectoryNotFoundException exDirNotFound) {
+            } catch (DirectoryNotFoundException) {
                 Console.WriteLine("ERR: The folder does not exist. [Program Exiting...]");
             } catch (Exception ex) {
                 Console.WriteLine("ERR: " + ex.Message + " [Program Exiting...]");
