@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using static PhotoToolbox.FileHandle;
+using static ExportGPS.FileHandle;
 
-namespace PhotoToolbox
+namespace ExportGPS
 {
     internal static class Program
     {

@@ -8,7 +8,7 @@ using MetadataExtractor.Formats.Exif;
 using static System.TimeZoneInfo;
 using static MetadataExtractor.ImageMetadataReader;
 
-namespace PhotoToolbox
+namespace ExportGPS
 {
     public static class MetadataQuery
     {

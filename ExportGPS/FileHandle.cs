@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Net;
-using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json.Linq;
-using static PhotoToolbox.MetadataQuery;
-using static PhotoToolbox.Program;
+using static ExportGPS.MetadataQuery;
+using static ExportGPS.Program;
 
-namespace PhotoToolbox
+namespace ExportGPS
 {
     public static class FileHandle
     {
