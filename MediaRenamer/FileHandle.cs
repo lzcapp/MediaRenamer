@@ -6,78 +6,86 @@ using static MediaRenamer.Program;
 
 namespace MediaRenamer {
     public static class FileHandle {
-        internal static void FileProcess(FileSystemInfo file) {
+        internal static bool FileProcess(FileSystemInfo file) {
             try {
                 string strDt;
                 var fileExt = file.Extension.ToLower();
                 if (PicExt.Contains(fileExt)) {
                     var dictResult = MetaQuery(file, true);
-                    strDt = dictResult["datetime"];
-                    if (string.IsNullOrEmpty(strDt)) {
-                        return;
+                    if (dictResult == null) {
+                        Console.WriteLine("[-Error-] MetaQuery returns NULL result: " + file.FullName + ".");
+                        return false;
+                    } else if (dictResult.ContainsKey("error")) {
+                        Console.WriteLine("[-Error-] MetaQuery error: " + dictResult["error"] + ".");
+                        return false;
+                    } else {
+                        strDt = dictResult["datetime"];
+                        Rename(file, strDt);
                     }
-
-                    Rename(file, string.IsNullOrEmpty(strDt) ? "ERROR" : strDt);
                 } else if (VidExt.Contains(fileExt)) {
                     var dictResult = MetaQuery(file, false);
-                    strDt = dictResult["datetime"];
-                    if (string.IsNullOrEmpty(strDt)) {
-                        return;
+                    if (dictResult == null) {
+                        Console.WriteLine("[-Error-] MetaQuery returns NULL result: " + file.FullName + ".");
+                        return false;
+                    } else if (dictResult.ContainsKey("error")) {
+                        Console.WriteLine("[-Error-] MetaQuery error: " + dictResult["error"] + ".");
+                        return false;
+                    } else {
+                        strDt = dictResult["datetime"];
+                        Rename(file, strDt);
                     }
-
-                    Rename(file, string.IsNullOrEmpty(strDt) ? "ERROR" : strDt);
                 } else {
                     var dictResult = MetaQuery(file, true);
-                    strDt = dictResult["datetime"];
-                    if (!string.IsNullOrEmpty(strDt)) {
+                    // try as pic
+                    if (dictResult == null || dictResult.ContainsKey("error")) {
                         dictResult = MetaQuery(file, false);
-                        strDt = dictResult["datetime"];
+                        // or else try as vid
                     }
 
-                    if (string.IsNullOrEmpty(strDt)) {
+                    if (dictResult == null) {
+                        Console.WriteLine("[-Error-] MetaQuery returns NULL result: " + file.FullName + ".");
+                        return false;
+                    } else if (dictResult.ContainsKey("error")) {
+                        Console.WriteLine("[-Error-] MetaQuery error: " + dictResult["error"] + ".");
+                        return false;
+                    } else {
+                        strDt = dictResult["datetime"];
+                        Rename(file, strDt);
                     }
                 }
-            } catch (Exception) {
-                // ignored
+            } catch (Exception ex) {
+                Console.WriteLine("[-Error-] FileProcess error: " + ex.Message + ".");
+                return false;
             }
+
+            return true;
         }
 
         private static void Rename(FileSystemInfo file, string strDt) {
-            switch (strDt) {
-                case "ERROR":
-                    Console.WriteLine("[-Error-] " + file.FullName + " --> NO Tag Found");
-                    return;
-                case "ERROR Unknown Type":
-                    Console.WriteLine("[-Error-] " + file.FullName + " --> UNKOWN File Type");
-                    return;
-                default:
-                    var strOriginName = file.FullName;
-                    var strPath = file.FullName.Replace(file.Name, "");
-                    var strFullName = Path.Combine(strPath, strDt);
-                    var strExt = file.Extension.ToLower();
-                    var intDupInx = 0;
-                    var strDupName = strFullName + strExt;
-                    if (File.Exists(strDupName) && FileCompare(strDupName, strOriginName)) {
-                        Console.WriteLine("[Skipped] " + file.FullName);
-                        return;
-                    }
+            var strOriginName = file.FullName;
+            var strPath = file.FullName.Replace(file.Name, "");
+            var strFullName = Path.Combine(strPath, strDt);
+            var strExt = file.Extension.ToLower();
+            var intDupInx = 0;
+            var strDupName = strFullName + strExt;
+            if (File.Exists(strDupName) && FileCompare(strDupName, strOriginName)) {
+                Console.WriteLine("[Skipped] " + file.FullName);
+                return;
+            }
 
-                    while (File.Exists(strDupName)) {
-                        intDupInx++;
-                        var strDupInx = "_" + intDupInx;
-                        strDupName = strFullName + strDupInx + strExt;
-                    }
+            while (File.Exists(strDupName)) {
+                intDupInx++;
+                var strDupInx = "_" + intDupInx;
+                strDupName = strFullName + strDupInx + strExt;
+            }
 
-                    var strNewName = strDupName;
-                    try {
-                        var fileInfo = new FileInfo(strOriginName);
-                        fileInfo.MoveTo(strNewName);
-                        Console.WriteLine("[-Moved-] " + " --> " + strNewName);
-                    } catch (Exception) {
-                        Console.WriteLine("[-Error-] " + " --> Error rename");
-                    }
-
-                    return;
+            var strNewName = strDupName;
+            try {
+                var fileInfo = new FileInfo(strOriginName);
+                fileInfo.MoveTo(strNewName);
+                Console.WriteLine("[-Moved-] " + " --> " + strNewName);
+            } catch (Exception) {
+                Console.WriteLine("[-Error-] " + " --> Error rename");
             }
         }
 

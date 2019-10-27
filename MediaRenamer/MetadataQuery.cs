@@ -14,7 +14,7 @@ namespace MediaRenamer {
             try {
                 Dictionary<string, string> dictResult;
                 Dictionary<string, string> dictDatetime;
-                Dictionary<string, string> dictGps;
+
                 switch (filetype) {
                     case true:
                         // file type is image
@@ -25,15 +25,6 @@ namespace MediaRenamer {
                             dictResult.Add(dt.Key, dt.Value);
                         }
 
-                        dictGps = PicGpsQuery(directories);
-                        if (dictGps == null) {
-                            return dictResult;
-                        }
-
-                        foreach (var gps in dictGps) {
-                            dictResult.Add(gps.Key, gps.Value + "");
-                        }
-
                         return dictResult;
                     case false:
                         // file type is video
@@ -41,15 +32,6 @@ namespace MediaRenamer {
                         dictDatetime = VidDtQuery(file);
                         foreach (var dt in dictDatetime) {
                             dictResult.Add(dt.Key, dt.Value);
-                        }
-
-                        dictGps = VidGpsQuery(file);
-                        if (dictGps == null) {
-                            return dictResult;
-                        }
-
-                        foreach (var gps in dictGps) {
-                            dictResult.Add(gps.Key, gps.Value + "");
                         }
 
                         return dictResult;
@@ -72,72 +54,10 @@ namespace MediaRenamer {
                 var startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1, 0, 0, 0, 0));
                 var timestamp = (dtDt.Ticks - startTime.Ticks) / 10000;
                 var dictDt = new Dictionary<string, string> {
-                                                                {"datetime", dtDt.ToString(strDtFormat)},
-                                                                {"timestamp", timestamp + ""}
-                                                            };
+                    {"datetime", dtDt.ToString(strDtFormat)},
+                    {"timestamp", timestamp + ""}
+                };
                 return dictDt;
-            } catch (Exception) {
-                return null;
-            }
-        }
-
-        // ReSharper disable once ParameterTypeCanBeEnumerable.Local
-        private static Dictionary<string, string> PicGpsQuery(IReadOnlyList<MetadataExtractor.Directory> directories) {
-            try {
-                var subdirGps = directories.OfType<GpsDirectory>().FirstOrDefault();
-                var strLng = subdirGps?.GetDescription(GpsDirectory.TagLongitude);
-                var strLat = subdirGps?.GetDescription(GpsDirectory.TagLatitude);
-                var strLngRef = subdirGps?.GetDescription(GpsDirectory.TagLongitudeRef);
-                var strLatRef = subdirGps?.GetDescription(GpsDirectory.TagLatitudeRef);
-                var strAlt = subdirGps?.GetDescription(GpsDirectory.TagAltitude);
-                var strAltRef = subdirGps?.GetDescription(GpsDirectory.TagAltitudeRef);
-                int intLngRef = 1, intLatRef = 1, intAltRef = 1;
-                switch (strLngRef) {
-                    case "E":
-                        intLngRef = 1;
-                        break;
-                    case "W":
-                        intLngRef = -1;
-                        break;
-                }
-
-                switch (strLatRef) {
-                    case "N":
-                        intLatRef = 1;
-                        break;
-                    case "S":
-                        intLatRef = -1;
-                        break;
-                }
-
-                var dblLngHor = double.Parse(strLng?.Split('°', ' ')[0] ?? throw new InvalidOperationException());
-                var strRmHor = strLng.Replace(dblLngHor + "° ", "");
-                var dblLngMin = double.Parse(strRmHor.Split('\'', ' ')[0]);
-                var dblLngSec =
-                    double.Parse(strLng.Replace(dblLngHor + "° " + dblLngMin + "\' ", "").Replace("\"", ""));
-                var dblLng = intLngRef * Math.Round(dblLngHor + dblLngMin / 60 + dblLngSec / 3600, 8);
-                var dblLatHor = double.Parse(strLat.Split('°', ' ')[0]);
-                var dblLatMin = double.Parse(strLat.Replace(dblLatHor + "° ", "").Split('\'', ' ')[0]);
-                var dblLatSec =
-                    double.Parse(strLat.Replace(dblLatHor + "° " + dblLatMin + "\' ", "").Replace("\"", ""));
-                var dblLat = intLatRef * Math.Round(dblLatHor + dblLatMin / 60 + dblLatSec / 3600, 8);
-                switch (strAltRef) {
-                    case "Above sea level":
-                        intAltRef = 1;
-                        break;
-                    case "Below sea level":
-                        intAltRef = -1;
-                        break;
-                }
-
-                var dblAlt =
-                    intAltRef * double.Parse(strAlt?.Replace(" metres", "") ?? throw new InvalidOperationException());
-                var dictGps = new Dictionary<string, string> {
-                                                                 {"longitude", dblLng + ""},
-                                                                 {"latitude", dblLat + ""},
-                                                                 {"altitude", dblAlt + ""}
-                                                             };
-                return dictGps;
             } catch (Exception) {
                 return null;
             }
@@ -172,58 +92,10 @@ namespace MediaRenamer {
             var startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1, 0, 0, 0, 0));
             var timestamp = (dtDt.Ticks - startTime.Ticks) / 10000;
             var dictDt = new Dictionary<string, string> {
-                                                            {"datetime", dtDt.ToString(strDtFormat)},
-                                                            {"timestamp", timestamp + ""}
-                                                        };
+                {"datetime", dtDt.ToString(strDtFormat)},
+                {"timestamp", timestamp + ""}
+            };
             return dictDt;
-        }
-
-        private static Dictionary<string, string> VidGpsQuery(FileSystemInfo file) {
-            try {
-                var mi = new MediaInfo();
-                mi.Open(file.FullName);
-                string strGps;
-                try {
-                    strGps = mi.Get(StreamKind.General, 0, "xyz");
-                } catch (Exception) {
-                    mi.Close();
-                    return null;
-                }
-
-                mi.Close();
-                var strGpsSplit = strGps.Split('+', '-');
-                var strLat = strGpsSplit[1];
-                var strLng = strGpsSplit[2];
-                var strRef = strGps.Replace(strLat, "").Replace(strLng, "");
-                int intLatRef = 1, intLngRef = 1;
-                switch (strRef[0]) {
-                    case '+':
-                        intLatRef = 1;
-                        break;
-                    case '-':
-                        intLatRef = -1;
-                        break;
-                }
-
-                switch (strRef[1]) {
-                    case '+':
-                        intLngRef = 1;
-                        break;
-                    case '-':
-                        intLngRef = -1;
-                        break;
-                }
-
-                var dblLat = intLatRef * double.Parse(strLat);
-                var dblLng = intLngRef * double.Parse(strLng.Replace("/", ""));
-                var dictGps = new Dictionary<string, string> {
-                                                                 {"longitude", dblLng + ""},
-                                                                 {"Latitude", dblLat + ""}
-                                                             };
-                return dictGps;
-            } catch (Exception) {
-                return null;
-            }
         }
     }
 }
