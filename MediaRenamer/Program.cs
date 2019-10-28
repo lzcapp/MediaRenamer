@@ -31,6 +31,9 @@ namespace MediaRenamer {
             } catch (Exception ex) {
                 Console.WriteLine("[-Error-] " + ex.Message + " [Program Exiting...]");
             }
+            
+            Console.WriteLine("Hit a key to exit...");
+            Console.ReadKey();
         }
 
         private static List<FileSystemInfo> GetFiles(DirectoryInfo dirInfo, List<FileSystemInfo> fileList) {
