@@ -23,11 +23,16 @@ namespace ExportGPS {
                         };
                         var directories = ReadMetadata(file.FullName);
                         dictDt = PicDtQuery(directories);
+                        if (dictDt == null) {
+                            return null;
+                        }
                         foreach (var dt in dictDt) {
                             dictResult.Add(dt.Key, dt.Value);
                         }
                         dictGps = PicGpsQuery(directories);
-                        if (dictGps == null) return dictResult;
+                        if (dictGps == null) {
+                            return null;
+                        }
                         foreach (var gps in dictGps) {
                             dictResult.Add(gps.Key, gps.Value + "");
                         }
@@ -38,11 +43,16 @@ namespace ExportGPS {
                             { "type", "Vid" }
                         };
                         dictDt = VidDtQuery(file);
+                        if (dictDt == null) {
+                            return null;
+                        }
                         foreach (var dt in dictDt) {
                             dictResult.Add(dt.Key, dt.Value);
                         }
                         dictGps = VidGpsQuery(file);
-                        if (dictGps == null) return dictResult;
+                        if (dictGps == null) {
+                            return null;
+                        }
                         foreach (var gps in dictGps) {
                             dictResult.Add(gps.Key, gps.Value + "");
                         }

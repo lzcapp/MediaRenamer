@@ -19,6 +19,7 @@ namespace ExportGPS {
         }
 
         private void Button1_Click(object sender, EventArgs e) {
+            btnFolder.Enabled = false;
             FolderBrowserDialog folder = new FolderBrowserDialog();
             if (folder.ShowDialog() == DialogResult.OK) {
                 filePath = folder.SelectedPath;
@@ -37,7 +38,8 @@ namespace ExportGPS {
                 if (dictResult == null) {
                     continue;
                 }
-                backgroundWorker.ReportProgress(progress / maximum, file.Name + ": " + dictResult["longitude"] + ", " + dictResult["latitude"]);
+                int percentComplete = (int)((float)progress / (float)maximum * 100);
+                backgroundWorker.ReportProgress(percentComplete, file.Name + ": " + dictResult["longitude"] + ", " + dictResult["latitude"]);
                 AddGps(dictResult);
             }
             SortTable();
@@ -46,10 +48,13 @@ namespace ExportGPS {
 
         public void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
             label1.Text += e.UserState.ToString() + "\n";
-            progressBar.Value = e.ProgressPercentage * 100;
+            progressBar.Value = e.ProgressPercentage;
         }
 
         public void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+            btnFolder.Enabled = true;
+            label1.Text = "";
+            progressBar.Value = 0;
             MessageBox.Show("Work Finished!");
         }
 
@@ -58,8 +63,6 @@ namespace ExportGPS {
                 return;
             }
             var dataRow = datatable.NewRow();
-            //dataRow["timestamp"] = dictResult["timestamp"];
-            //dataRow["datetime"] = dictResult["datatime"];
             dataRow["longitude"] = dictResult["longitude"];
             dataRow["latitude"] = dictResult["latitude"];
             dataRow["timestamp"] = dictResult["timestamp"];
@@ -92,14 +95,16 @@ namespace ExportGPS {
         public static void Export2Csv(string filePath) {
             System.IO.FileStream fs = new FileStream(filePath, System.IO.FileMode.Create, System.IO.FileAccess.Write);
             StreamWriter sw = new StreamWriter(fs, new System.Text.UnicodeEncoding());
-            for (int i = 1; i < datatable.Columns.Count; i++) {
+            for (int i = 0; i < datatable.Columns.Count; i++) {
                 sw.Write(datatable.Columns[i].ColumnName);
                 sw.Write(",");
             }
             sw.WriteLine("");
             for (int i = 0; i < datatable.Rows.Count; i++) {
-                sw.Write("[");
-                for (int j = 1; j < datatable.Columns.Count; j++) {
+                for (int j = 0; j < datatable.Columns.Count; j++) {
+                    if (j == 1) {
+                        sw.Write("[");
+                    }
                     sw.Write(datatable.Rows[i][j].ToString());
                     if (j < datatable.Columns.Count - 1) {
                         sw.Write(",");

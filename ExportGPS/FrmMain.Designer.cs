@@ -25,8 +25,8 @@
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMian));
             this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.label1 = new System.Windows.Forms.Label();
             this.btnFolder = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // progressBar
@@ -35,14 +35,6 @@
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(530, 35);
             this.progressBar.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label1.Location = new System.Drawing.Point(12, 62);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(687, 204);
-            this.label1.TabIndex = 1;
             // 
             // btnFolder
             // 
@@ -54,13 +46,28 @@
             this.btnFolder.UseVisualStyleBackColor = true;
             this.btnFolder.Click += new System.EventHandler(this.Button1_Click);
             // 
+            // label1
+            // 
+            this.label1.BackColor = System.Drawing.SystemColors.Control;
+            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label1.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.label1.DetectUrls = false;
+            this.label1.HideSelection = false;
+            this.label1.Location = new System.Drawing.Point(12, 64);
+            this.label1.Name = "label1";
+            this.label1.ReadOnly = true;
+            this.label1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
+            this.label1.Size = new System.Drawing.Size(687, 199);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "";
+            // 
             // FrmMian
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(711, 275);
-            this.Controls.Add(this.btnFolder);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.btnFolder);
             this.Controls.Add(this.progressBar);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -74,8 +81,8 @@
         #endregion
 
         private System.Windows.Forms.ProgressBar progressBar;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnFolder;
+        private System.Windows.Forms.RichTextBox label1;
     }
 }
 

@@ -19,6 +19,9 @@ namespace ExportGPS {
                 var fileExt = file.Extension.ToLower();
                 if (PicExt.Contains(fileExt)) {
                     var dictResult = MetaQuery(file, true);
+                    if (dictResult == null) {
+                        return null;
+                    }
                     strDatetime = dictResult["datetime"];
                     if (string.IsNullOrEmpty(strDatetime)) {
                         return null;
@@ -26,6 +29,9 @@ namespace ExportGPS {
                     return ConvertGps(dictResult);
                 } else if (VidExt.Contains(fileExt)) {
                     var dictResult = MetaQuery(file, false);
+                    if (dictResult == null) {
+                        return null;
+                    }
                     strDatetime = dictResult["datetime"];
                     if (string.IsNullOrEmpty(strDatetime)) {
                         return null;
@@ -33,6 +39,9 @@ namespace ExportGPS {
                     return ConvertGps(dictResult);
                 } else {
                     var dictResult = MetaQuery(file, true);
+                    if (dictResult == null) {
+                        return null;
+                    }
                     strDatetime = dictResult["datetime"];
                     if (!string.IsNullOrEmpty(strDatetime)) {
                         dictResult = MetaQuery(file, false);
