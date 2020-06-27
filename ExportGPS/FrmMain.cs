@@ -7,14 +7,14 @@ using System.Windows.Forms;
 using static ExportGPS.FilePreprocessing;
 
 namespace ExportGPS {
-    public partial class FrmMian : Form {
+    public partial class FrmMain : Form {
         private BackgroundWorker backgroundWorker = null;
 
         private static readonly DataTable datatable = new DataTable("Table_GPS");
 
         private string filePath;
 
-        public FrmMian() {
+        public FrmMain() {
             InitializeComponent();
         }
 

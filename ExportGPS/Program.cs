@@ -10,7 +10,7 @@ namespace ExportGPS {
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmMian());
+            Application.Run(new FrmMain());
         }
     }
 }

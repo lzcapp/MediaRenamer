@@ -1,5 +1,5 @@
 ﻿namespace ExportGPS {
-    partial class FrmMian {
+    partial class FrmMain {
         /// <summary>
         /// 必需的设计器变量。
         /// </summary>
@@ -23,7 +23,7 @@
         /// 使用代码编辑器修改此方法的内容。
         /// </summary>
         private void InitializeComponent() {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMian));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.btnFolder = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.RichTextBox();
