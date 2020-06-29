@@ -21,19 +21,25 @@ namespace MediaRenamer {
                         dictResult = new Dictionary<string, string> {{"type", "Pic"}};
                         var directories = ReadMetadata(file.FullName);
                         dictDatetime = PicDtQuery(directories);
-                        foreach (var dt in dictDatetime) {
-                            dictResult.Add(dt.Key, dt.Value);
+                        if (dictDatetime != null) {
+                            foreach (var dt in dictDatetime) {
+                                dictResult.Add(dt.Key, dt.Value);
+                            }
+                        } else {
+                            return null;
                         }
-
                         return dictResult;
                     case false:
                         // file type is video
                         dictResult = new Dictionary<string, string> {{"type", "Vid"}};
                         dictDatetime = VidDtQuery(file);
-                        foreach (var dt in dictDatetime) {
-                            dictResult.Add(dt.Key, dt.Value);
+                        if (dictDatetime != null) {
+                            foreach (var dt in dictDatetime) {
+                                dictResult.Add(dt.Key, dt.Value);
+                            }
+                        } else {
+                            return null;
                         }
-
                         return dictResult;
                     default:
                         return null;
@@ -44,7 +50,6 @@ namespace MediaRenamer {
             }
         }
 
-        // ReSharper disable once ParameterTypeCanBeEnumerable.Local
         private static Dictionary<string, string> PicDtQuery(IReadOnlyList<MetadataExtractor.Directory> directories) {
             try {
                 var subdirDt = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
@@ -82,7 +87,6 @@ namespace MediaRenamer {
                 mi.Close();
                 return null;
             }
-
             mi.Dispose();
             const string strDtFormat = "yyyy.MM.dd_HHmmss";
             var strTz = strDt.Substring(0, 3);

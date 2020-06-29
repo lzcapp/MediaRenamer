@@ -11,9 +11,9 @@ namespace MediaRenamer {
 
         private static void Main() {
             Console.WriteLine("Copyright © 2019 RainySummer, All Rights Reserved.");
-            Console.WriteLine(">> Tool for renaming multi-media files.\n");
+            Console.WriteLine(">> A tool for renaming multi-media files.\n");
 
-            Console.WriteLine(@"Please Input the Folder Path:");
+            Console.WriteLine("Please Input the Folder Path:");
             string dirInput;
             do {
                 dirInput = Console.ReadLine();
