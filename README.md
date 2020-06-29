@@ -13,9 +13,9 @@ A Tool to **Rename** Media Files by Their `Taken Date`. <br/>
   - **MediaInfoDotNet**&nbsp;&nbsp;&nbsp;&nbsp;version: 0.7.79.40925
     - NuGet:  https://www.nuget.org/packages/MediaInfoDotNet/
     - GitHub: https://github.com/cschlote/MediaInfoDotNet
-~~- DDL:~~
-  ~~- **MediaInfo.Dll**&nbsp;&nbsp;&nbsp;&nbsp;version: 18.08.1.0~~
-    ~~- https://mediaarea.net/en/MediaInfo/Download/Windows~~
+  - ~~DDL:~~
+    - ~~**MediaInfo.Dll**&nbsp;&nbsp;&nbsp;&nbsp;version: 18.08.1.0~~
+    - ~~https://mediaarea.net/en/MediaInfo/Download/Windows~~
 
 ### Alternative
 - Using official DDL and C# wrapper: <br/>
