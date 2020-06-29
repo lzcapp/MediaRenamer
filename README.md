@@ -24,8 +24,8 @@ A Tool to **Rename** Media Files by Their `Taken Date`. <br/>
   - MediaInfo.Dll:  <br/>https://mediaarea.net/en/MediaInfo
   > To make ~~this example~~ working, you must put MediaInfo.Dll ~~and Example.ogg~~ in the ~~"./Bin/\_\_ConfigurationName\_\_"~~ `.\VideoRenamer\bin\Debug or .\VideoRenamer\bin\Release` folder and add **MediaInfoDll.cs** to your project <br/>
 
-### DDL Update (Haven't Try Yet)
-Download new [MediaInfo.Dll](https://mediaarea.net/en/MediaInfo) corresponding to the platform and replace the file in `.\VideoRenamer\bin\Debug` or `.\VideoRenamer\bin\Release` folder.
+### ~~DDL Update (Haven't Try Yet)~~
+~~Download new [MediaInfo.Dll](https://mediaarea.net/en/MediaInfo) corresponding to the platform and replace the file in `.\VideoRenamer\bin\Debug` or `.\VideoRenamer\bin\Release` folder.~~
 
 ## Built With
 - Visual Studio Community 2017
