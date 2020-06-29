@@ -2,7 +2,7 @@
 A Tool to **Rename** Media Files by Their `Taken Date`. <br/>
 
 ## Prerequisites
-- Unzip the files in **[Debug.zip](https://github.com/RainySummerLuo/MediaFileRenamer/blob/master/Debug.zip?raw=true)** and move them to `.\VideoRenamer\bin\Debug` or `.\VideoRenamer\bin\Release` folder (depends on your configuration). <br/>
+- Unzip the files in **[Debug.zip](https://github.com/RainySummerLuo/PhotoToolbox/releases/download/v1.0.1/Debug.zip)** in **Release v1.0.1** and put them under `.\VideoRenamer\bin\Debug` or `.\VideoRenamer\bin\Release` folder (depends on your configuration). <br/>
 - ~~**or** Download **[MediaInfo.Dll](https://mediaarea.net/en/MediaInfo) corresponding to the platform to** `.\VideoRenamer\bin\Debug` or `.\VideoRenamer\bin\Release` folder (depends on your configuration).~~
 
 ## Third-party Usage
