@@ -7,14 +7,14 @@ A Tool to **Rename** Media Files by Their `Taken Date`. <br/>
 
 ## Third-party Usage
 - Using nuget package: 
-  - **MetadataExtractor**&nbsp;&nbsp;&nbsp;&nbsp;version: 2.0.0
+  - **MetadataExtractor**
     - NuGet:  https://www.nuget.org/packages/MetadataExtractor/
     - GitHub: https://github.com/drewnoakes/metadata-extractor-dotnet
-  - **MediaInfoDotNet**&nbsp;&nbsp;&nbsp;&nbsp;version: 0.7.79.40925
+  - **MediaInfoDotNet**
     - NuGet:  https://www.nuget.org/packages/MediaInfoDotNet/
     - GitHub: https://github.com/cschlote/MediaInfoDotNet
   - ~~DDL:~~
-    - ~~**MediaInfo.Dll**&nbsp;&nbsp;&nbsp;&nbsp;version: 18.08.1.0~~
+    - ~~**MediaInfo.Dll**~~
     - ~~https://mediaarea.net/en/MediaInfo/Download/Windows~~
 
 ### Alternative
