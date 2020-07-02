@@ -13,10 +13,10 @@ namespace MediaRenamer {
                 if (PicExt.Contains(fileExt)) {
                     var dictResult = MetaQuery(file, true);
                     if (dictResult == null) {
-                        Console.WriteLine("[-Error-] MetaQuery returns NULL result: " + file.FullName + ".");
+                        Console.WriteLine("[-Error-] Pic MetaQuery returns NULL result: " + file.FullName + ".");
                         return false;
                     } else if (dictResult.ContainsKey("error")) {
-                        Console.WriteLine("[-Error-] MetaQuery error: " + dictResult["error"] + ".");
+                        Console.WriteLine("[-Error-] Pic MetaQuery error: " + dictResult["error"] + ".");
                         return false;
                     } else {
                         strDt = dictResult["datetime"];
@@ -25,10 +25,10 @@ namespace MediaRenamer {
                 } else if (VidExt.Contains(fileExt)) {
                     var dictResult = MetaQuery(file, false);
                     if (dictResult == null) {
-                        Console.WriteLine("[-Error-] MetaQuery returns NULL result: " + file.FullName + ".");
+                        Console.WriteLine("[-Error-] Vid MetaQuery returns NULL result: " + file.FullName + ".");
                         return false;
                     } else if (dictResult.ContainsKey("error")) {
-                        Console.WriteLine("[-Error-] MetaQuery error: " + dictResult["error"] + ".");
+                        Console.WriteLine("[-Error-] Pic MetaQuery error: " + dictResult["error"] + ".");
                         return false;
                     } else {
                         strDt = dictResult["datetime"];
