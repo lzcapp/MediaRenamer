@@ -26,7 +26,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.btnFolder = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.RichTextBox();
+            this.lblInfo = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // progressBar
@@ -46,32 +46,32 @@
             this.btnFolder.UseVisualStyleBackColor = true;
             this.btnFolder.Click += new System.EventHandler(this.Button1_Click);
             // 
-            // label1
+            // lblInfo
             // 
-            this.label1.BackColor = System.Drawing.SystemColors.Control;
-            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label1.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.label1.DetectUrls = false;
-            this.label1.HideSelection = false;
-            this.label1.Location = new System.Drawing.Point(12, 64);
-            this.label1.Name = "label1";
-            this.label1.ReadOnly = true;
-            this.label1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
-            this.label1.Size = new System.Drawing.Size(687, 199);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "";
+            this.lblInfo.BackColor = System.Drawing.SystemColors.Control;
+            this.lblInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblInfo.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.lblInfo.DetectUrls = false;
+            this.lblInfo.HideSelection = false;
+            this.lblInfo.Location = new System.Drawing.Point(12, 64);
+            this.lblInfo.Name = "lblInfo";
+            this.lblInfo.ReadOnly = true;
+            this.lblInfo.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
+            this.lblInfo.Size = new System.Drawing.Size(687, 199);
+            this.lblInfo.TabIndex = 3;
+            this.lblInfo.Text = "";
             // 
-            // FrmMian
+            // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(711, 275);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblInfo);
             this.Controls.Add(this.btnFolder);
             this.Controls.Add(this.progressBar);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "FrmMian";
+            this.Name = "FrmMain";
             this.Text = "PhotoToolbox - ExportGPS";
             this.Load += new System.EventHandler(this.FrmMian_Load);
             this.ResumeLayout(false);
@@ -82,7 +82,7 @@
 
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Button btnFolder;
-        private System.Windows.Forms.RichTextBox label1;
+        private System.Windows.Forms.RichTextBox lblInfo;
     }
 }
 

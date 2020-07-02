@@ -19,9 +19,9 @@ namespace ExportGPS {
         }
 
         private void Button1_Click(object sender, EventArgs e) {
-            btnFolder.Enabled = false;
             FolderBrowserDialog folder = new FolderBrowserDialog();
             if (folder.ShowDialog() == DialogResult.OK) {
+                btnFolder.Enabled = false;
                 filePath = folder.SelectedPath;
                 backgroundWorker.RunWorkerAsync();
             }
@@ -39,7 +39,7 @@ namespace ExportGPS {
                     continue;
                 }
                 int percentComplete = (int)((float)progress / (float)maximum * 100);
-                backgroundWorker.ReportProgress(percentComplete, file.Name + ": " + dictResult["longitude"] + ", " + dictResult["latitude"]);
+                backgroundWorker.ReportProgress(percentComplete, file.Name + ": " + dictResult["longitude"] + ", " + dictResult["latitude"] + ", " + dictResult["altitude"]);
                 AddGps(dictResult);
             }
             SortTable();
@@ -47,13 +47,13 @@ namespace ExportGPS {
         }
 
         public void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
-            label1.Text += e.UserState.ToString() + "\n";
+            lblInfo.Text += e.UserState.ToString() + "\n";
             progressBar.Value = e.ProgressPercentage;
         }
 
         public void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
             btnFolder.Enabled = true;
-            label1.Text = "";
+            lblInfo.Text = "";
             progressBar.Value = 0;
             MessageBox.Show("Work Finished!");
         }
@@ -66,7 +66,7 @@ namespace ExportGPS {
             dataRow["longitude"] = dictResult["longitude"];
             dataRow["latitude"] = dictResult["latitude"];
             dataRow["timestamp"] = dictResult["timestamp"];
-            //dataRow["altitude"] = dictResult["altitude"];
+            dataRow["altitude"] = dictResult["altitude"];
             datatable.Rows.Add(dataRow);
         }
 
@@ -125,9 +125,10 @@ namespace ExportGPS {
             backgroundWorker.ProgressChanged += new ProgressChangedEventHandler(BackgroundWorker_ProgressChanged);
             backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(BackgroundWorker_RunWorkerCompleted);
 
-            datatable.Columns.Add("timestamp", typeof(String));
-            datatable.Columns.Add("longitude", typeof(String));
-            datatable.Columns.Add("latitude", typeof(String));
+            datatable.Columns.Add("timestamp", typeof(string));
+            datatable.Columns.Add("longitude", typeof(string));
+            datatable.Columns.Add("latitude", typeof(string));
+            datatable.Columns.Add("altitude", typeof(string));
 
             progressBar.Maximum = 100;
         }

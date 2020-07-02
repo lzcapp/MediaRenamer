@@ -26,8 +26,10 @@ namespace ExportGPS {
                     if (string.IsNullOrEmpty(strDatetime)) {
                         return null;
                     }
-                    return ConvertGps(dictResult);
-                } else if (VidExt.Contains(fileExt)) {
+                    return dictResult;
+                }
+                /**
+                else if (VidExt.Contains(fileExt)) {
                     var dictResult = MetaQuery(file, false);
                     if (dictResult == null) {
                         return null;
@@ -52,9 +54,11 @@ namespace ExportGPS {
                     }
                     return ConvertGps(dictResult);
                 }
+                **/
             } catch (Exception) {
                 return null;
             }
+            return null;
         }
 
         private static Dictionary<string, string> ConvertGps(IReadOnlyDictionary<string, string> dictGps) {

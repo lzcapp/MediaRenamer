@@ -131,9 +131,9 @@ namespace ExportGPS {
                 var dblAlt = intAltRef * double.Parse(strAlt?.Replace(" metres", "") ?? throw new InvalidOperationException());
                 var dictGps = new Dictionary<string, string>
                 {
-                    {"longitude", dblLng + ""},
-                    {"latitude", dblLat + ""},
-                    {"altitude", dblAlt + ""}
+                    {"longitude", dblLng.ToString()},
+                    {"latitude", dblLat.ToString()},
+                    {"altitude", dblAlt.ToString()}
                 };
                 return dictGps;
             } catch (Exception) {
