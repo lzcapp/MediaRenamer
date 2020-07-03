@@ -102,15 +102,11 @@ namespace ExportGPS {
             sw.WriteLine("");
             for (int i = 0; i < datatable.Rows.Count; i++) {
                 for (int j = 0; j < datatable.Columns.Count; j++) {
-                    if (j == 1) {
-                        sw.Write("[");
-                    }
                     sw.Write(datatable.Rows[i][j].ToString());
                     if (j < datatable.Columns.Count - 1) {
                         sw.Write(",");
                     }
                 }
-                sw.Write("],");
                 sw.WriteLine("");
             }
             sw.Flush();

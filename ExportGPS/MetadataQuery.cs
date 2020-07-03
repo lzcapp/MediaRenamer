@@ -89,37 +89,25 @@ namespace ExportGPS {
             try {
                 var subdirGps = directories.OfType<GpsDirectory>().FirstOrDefault();
                 var strLng = subdirGps?.GetDescription(GpsDirectory.TagLongitude);
+                if (strLng == null) {
+                    return null;
+                }
                 var strLat = subdirGps?.GetDescription(GpsDirectory.TagLatitude);
                 var strLngRef = subdirGps?.GetDescription(GpsDirectory.TagLongitudeRef);
                 var strLatRef = subdirGps?.GetDescription(GpsDirectory.TagLatitudeRef);
                 var strAlt = subdirGps?.GetDescription(GpsDirectory.TagAltitude);
                 var strAltRef = subdirGps?.GetDescription(GpsDirectory.TagAltitudeRef);
-                int intLngRef = 1, intLatRef = 1, intAltRef = 1;
-                switch (strLngRef) {
-                    case "E":
-                        intLngRef = 1;
-                        break;
-                    case "W":
-                        intLngRef = -1;
-                        break;
-                }
-                switch (strLatRef) {
-                    case "N":
-                        intLatRef = 1;
-                        break;
-                    case "S":
-                        intLatRef = -1;
-                        break;
-                }
+                int intAltRef = 1;
+                
                 var dblLngHor = double.Parse(strLng?.Split('°', ' ')[0] ?? throw new InvalidOperationException());
                 var strRmHor = strLng.Replace(dblLngHor + "° ", "");
                 var dblLngMin = double.Parse(strRmHor.Split('\'', ' ')[0]);
                 var dblLngSec = double.Parse(strLng.Replace(dblLngHor + "° " + dblLngMin + "\' ", "").Replace("\"", ""));
-                var dblLng = intLngRef * Math.Round(dblLngHor + dblLngMin / 60 + dblLngSec / 3600, 8);
+                var dblLng = Math.Round(dblLngHor + dblLngMin / 60 + dblLngSec / 3600, 8);
                 var dblLatHor = double.Parse(strLat.Split('°', ' ')[0]);
                 var dblLatMin = double.Parse(strLat.Replace(dblLatHor + "° ", "").Split('\'', ' ')[0]);
                 var dblLatSec = double.Parse(strLat.Replace(dblLatHor + "° " + dblLatMin + "\' ", "").Replace("\"", ""));
-                var dblLat = intLatRef * Math.Round(dblLatHor + dblLatMin / 60 + dblLatSec / 3600, 8);
+                var dblLat = Math.Round(dblLatHor + dblLatMin / 60 + dblLatSec / 3600, 8);
                 switch (strAltRef) {
                     case "Above sea level":
                         intAltRef = 1;
