@@ -70,6 +70,9 @@ namespace ExportGPS {
             try {
                 var subdirDt = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
                 var strDt = subdirDt?.GetDescription(ExifDirectoryBase.TagDateTime);
+                if (string.IsNullOrEmpty(strDt)) {
+                    return null;
+                }
                 const string strDtFormat = "yyyy.MM.dd_HHmmss";
                 var dtDt = DateTime.ParseExact(strDt, "yyyy:MM:dd HH:mm:ss", CultureInfo.CurrentCulture);
                 var startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1, 0, 0, 0, 0));
@@ -89,7 +92,7 @@ namespace ExportGPS {
             try {
                 var subdirGps = directories.OfType<GpsDirectory>().FirstOrDefault();
                 var strLng = subdirGps?.GetDescription(GpsDirectory.TagLongitude);
-                if (strLng == null) {
+                if (string.IsNullOrEmpty(strLng)) {
                     return null;
                 }
                 var strLat = subdirGps?.GetDescription(GpsDirectory.TagLatitude);
@@ -140,6 +143,8 @@ namespace ExportGPS {
                 }
                 if (string.IsNullOrEmpty(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "Recorded_Date");
+                } else if (string.IsNullOrEmpty(strDt)) {
+                    return null;
                 }
                 mi.Close();
             } catch (Exception) {
@@ -169,6 +174,9 @@ namespace ExportGPS {
                 string strGps;
                 try {
                     strGps = mi.Get(StreamKind.General, 0, "xyz");
+                    if (string.IsNullOrEmpty(strGps)) {
+                        return null;
+                    }
                 } catch (Exception) {
                     mi.Close();
                     return null;

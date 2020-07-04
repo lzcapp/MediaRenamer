@@ -93,7 +93,7 @@ namespace ExportGPS {
         }
 
         public static void Export2Csv(string filePath) {
-            System.IO.FileStream fs = new FileStream(filePath, System.IO.FileMode.Create, System.IO.FileAccess.Write);
+            FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
             StreamWriter sw = new StreamWriter(fs, new System.Text.UnicodeEncoding());
             for (int i = 0; i < datatable.Columns.Count; i++) {
                 sw.Write(datatable.Columns[i].ColumnName);
@@ -114,12 +114,12 @@ namespace ExportGPS {
         }
 
         private void FrmMian_Load(object sender, EventArgs e) {
-            backgroundWorker = new System.ComponentModel.BackgroundWorker {
+            backgroundWorker = new BackgroundWorker {
                 WorkerReportsProgress = true
             };
             backgroundWorker.DoWork += new DoWorkEventHandler(BackgroundWorker_DoWork);
             backgroundWorker.ProgressChanged += new ProgressChangedEventHandler(BackgroundWorker_ProgressChanged);
-            backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(BackgroundWorker_RunWorkerCompleted);
+            backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundWorker_RunWorkerCompleted);
 
             datatable.Columns.Add("timestamp", typeof(string));
             datatable.Columns.Add("longitude", typeof(string));
