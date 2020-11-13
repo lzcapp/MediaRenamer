@@ -1,4 +1,4 @@
-# MediaFileRenamer
+# MediaRenamer
 A Tool to **Rename** Media Files by Their `Taken Date`. <br/>
 
 ## Prerequisites
