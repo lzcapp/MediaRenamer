@@ -70,31 +70,44 @@ namespace MediaRenamer {
 
         private static Dictionary<string, string> VidDtQuery(FileSystemInfo file) {
             string strDt;
+            bool isApple = true;
             var mi = new MediaInfo();
             mi.Open(file.FullName);
             try {
-                strDt = mi.Get(StreamKind.Video, 0, "Encoded_Date");
+                strDt = mi.Get(StreamKind.General, 0, "com.apple.quicktime.creationdate");
+                if (string.IsNullOrEmpty(strDt)) {
+                    isApple = false;
+                    strDt = mi.Get(StreamKind.Video, 0, "Encoded_Date");
+                }
                 if (string.IsNullOrEmpty(strDt)) {
                     strDt = mi.Get(StreamKind.Video, 0, "Tagged_Date");
                 }
-
                 if (string.IsNullOrEmpty(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "Recorded_Date");
                 }
-
                 mi.Close();
             } catch (Exception) {
                 mi.Close();
                 return null;
             }
             mi.Dispose();
-            const string strDtFormat = "yyyy.MM.dd_HHmmss";
-            var strTz = strDt.Substring(0, 3);
-            strDt = strDt.Replace(strTz + " ", "");
-            var dtDt = DateTime.ParseExact(strDt, "yyyy-MM-dd HH:mm:ss", CultureInfo.CurrentCulture);
+
+            string strSourceDtFormat;
+            if (isApple) {
+                strSourceDtFormat = "yyyy-MM-ddTHH:mm:ss";
+                var strTz = strDt.Substring(19);
+                strDt = strDt.Replace(strTz, "");
+            } else {
+                strSourceDtFormat = "yyyy-MM-dd HH:mm:ss";
+                var strTz = strDt.Substring(0, 3);
+                strDt = strDt.Replace(strTz + " ", "");
+            }
+            var dtDt = DateTime.ParseExact(strDt, strSourceDtFormat, CultureInfo.CurrentCulture);
             dtDt = ConvertTimeFromUtc(dtDt, Local);
             var startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1, 0, 0, 0, 0));
             var timestamp = (dtDt.Ticks - startTime.Ticks) / 10000;
+
+            const string strDtFormat = "yyyy.MM.dd_HHmmss";
             var dictDt = new Dictionary<string, string> {
                 {"datetime", dtDt.ToString(strDtFormat)},
                 {"timestamp", timestamp + ""}

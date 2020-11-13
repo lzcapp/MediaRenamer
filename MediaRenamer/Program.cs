@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using static MediaRenamer.FileHandle;
 
 namespace MediaRenamer {
@@ -10,14 +11,18 @@ namespace MediaRenamer {
         // ReSharper disable once FieldCanBeMadeReadOnly.Global
 
         private static void Main() {
-            Console.WriteLine("Copyright © 2019 RainySummer, All Rights Reserved.");
+            Console.OutputEncoding = Encoding.UTF8;
+
+            Console.WriteLine("Copyright \u00a9 2019 RainySummer, All Rights Reserved.");
             Console.WriteLine(">> A tool for renaming multi-media files.\n");
 
             Console.WriteLine("Please Input the Folder Path:");
+            Console.Write(">> ");
             string dirInput;
             do {
                 dirInput = Console.ReadLine();
             } while (string.IsNullOrWhiteSpace(dirInput));
+            Console.WriteLine();
 
             try {
                 var diPath = new DirectoryInfo(dirInput);
@@ -32,7 +37,7 @@ namespace MediaRenamer {
                 Console.WriteLine("[-Error-] " + ex.Message + " [Program Exiting...]");
             }
             
-            Console.WriteLine("Hit a key to exit...");
+            Console.Write("\nPress Any Key To Exit...");
             Console.ReadKey();
         }
 

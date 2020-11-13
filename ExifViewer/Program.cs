@@ -6,7 +6,7 @@ using System.IO;
 namespace ExifViewer {
     class Program {
         static void Main() {
-            string path = "";
+            string path = "Q:\\XXX\\ZZ\\201014 众\\2020.10.14_104356.mov";
 
             var directories = ImageMetadataReader.ReadMetadata(path);
 
