@@ -219,7 +219,15 @@
         </member>
         <member name="M:MetadataExtractor.DirectoryExtensions.TryGetDateTime(MetadataExtractor.Directory,System.Int32,System.DateTime@)">
             <summary>Attempts to return the specified tag's value as a DateTime.</summary>
-            <remarks>If the underlying value is a <see cref="T:System.String"/>, then attempts will be made to parse it.</remarks>
+            <remarks>
+            <para>
+            If the underlying value is a <see cref="T:System.String"/>, then attempts will be made to parse it.
+            </para>
+            <para>
+            If that string contains a time-zone offset, the returned <see cref="T:System.DateTime"/> will have kind <see cref="F:System.DateTimeKind.Utc"/>,
+            otherwise it will be <see cref="F:System.DateTimeKind.Unspecified"/>.
+            </para>
+            </remarks>
             <returns><c>true</c> if a DateTime was returned, otherwise <c>false</c>.</returns>
         </member>
         <member name="M:MetadataExtractor.DirectoryExtensions.TryGetRational(MetadataExtractor.Directory,System.Int32,MetadataExtractor.Rational@)">
