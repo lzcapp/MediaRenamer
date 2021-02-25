@@ -41,13 +41,13 @@ namespace MediaRenamer {
                             return null;
                         }
                         return dictResult;
-                    default:
-                        return null;
                 }
             } catch (Exception e) {
                 Console.WriteLine(e);
                 return null;
             }
+            // ReSharper disable once HeuristicUnreachableCode
+            return null;
         }
 
         private static Dictionary<string, string> PicDtQuery(IReadOnlyList<MetadataExtractor.Directory> directories) {
@@ -73,7 +73,7 @@ namespace MediaRenamer {
 
         private static Dictionary<string, string> VidDtQuery(FileSystemInfo file) {
             string strDt;
-            bool isApple = true;
+            var isApple = true;
             var mi = new MediaInfo();
             mi.Open(file.FullName);
             try {
