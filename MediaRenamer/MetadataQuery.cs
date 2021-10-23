@@ -5,8 +5,9 @@ using System.IO;
 using System.Linq;
 using MediaInfoLib;
 using MetadataExtractor.Formats.Exif;
-using static System.TimeZoneInfo;
 using static MetadataExtractor.ImageMetadataReader;
+using static System.TimeZoneInfo;
+using Directory = MetadataExtractor.Directory;
 
 namespace MediaRenamer {
     public static class MetadataQuery {
@@ -28,6 +29,7 @@ namespace MediaRenamer {
                         } else {
                             return null;
                         }
+
                         return dictResult;
                     case false:
                         // file type is video
@@ -40,17 +42,17 @@ namespace MediaRenamer {
                         } else {
                             return null;
                         }
+
                         return dictResult;
                 }
             } catch (Exception e) {
                 Console.WriteLine(e);
                 return null;
             }
-            // ReSharper disable once HeuristicUnreachableCode
             return null;
         }
 
-        private static Dictionary<string, string> PicDtQuery(IReadOnlyList<MetadataExtractor.Directory> directories) {
+        private static Dictionary<string, string> PicDtQuery(IReadOnlyList<Directory> directories) {
             try {
                 var subdirDt = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
                 var strDt = subdirDt?.GetDescription(ExifDirectoryBase.TagDateTime);
@@ -61,6 +63,7 @@ namespace MediaRenamer {
                 if (timestamp == 0) {
                     return null;
                 }
+
                 var dictDt = new Dictionary<string, string> {
                     {"datetime", dtDt.ToString(strDtFormat)},
                     {"timestamp", timestamp + ""}
@@ -77,21 +80,25 @@ namespace MediaRenamer {
             var mi = new MediaInfo();
             mi.Open(file.FullName);
             try {
-                strDt = mi.Get(StreamKind.General, 0, "com.apple.quicktime.creationdate");
-                if (string.IsNullOrEmpty(strDt)) {
-                    isApple = false;
-                    strDt = mi.Get(StreamKind.Video, 0, "Encoded_Date");
-                }
+                strDt = mi.Get(StreamKind.Video, 0, "Encoded_Date");
                 if (string.IsNullOrEmpty(strDt)) {
                     strDt = mi.Get(StreamKind.Video, 0, "Tagged_Date");
                 }
+
                 if (string.IsNullOrEmpty(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "Recorded_Date");
+                }
+
+                if (string.IsNullOrEmpty(strDt)) {
+                    isApple = false;
+                    strDt =
+                        mi.Get(StreamKind.General, 0, "com.apple.quicktime.creationdate");
                 }
             } catch (Exception) {
                 mi.Dispose();
                 return null;
             }
+
             mi.Dispose();
 
             string strSourceDtFormat;
@@ -108,6 +115,7 @@ namespace MediaRenamer {
                     strDt = strDt.Replace(strTz + " ", "");
                 }
             }
+
             var dtDt = DateTime.ParseExact(strDt, strSourceDtFormat, CultureInfo.CurrentCulture);
             dtDt = ConvertTimeFromUtc(dtDt, Local);
             var startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1, 0, 0, 0, 0));
@@ -115,6 +123,7 @@ namespace MediaRenamer {
             if (timestamp == 0) {
                 return null;
             }
+
             const string strDtFormat = "yyyy.MM.dd_HHmmss";
             var dictDt = new Dictionary<string, string> {
                 {"datetime", dtDt.ToString(strDtFormat)},

@@ -112,11 +112,15 @@ namespace ExportGPS {
                 var dblLatSec = double.Parse(strLat.Replace(dblLatHor + "° " + dblLatMin + "\' ", "").Replace("\"", ""));
                 var dblLat = Math.Round(dblLatHor + dblLatMin / 60 + dblLatSec / 3600, 8);
                 switch (strAltRef) {
+                    case null:
+                    case "Sea level":
                     case "Above sea level":
                         intAltRef = 1;
                         break;
                     case "Below sea level":
                         intAltRef = -1;
+                        break;
+                    default:
                         break;
                 }
                 var dblAlt = intAltRef * double.Parse(strAlt?.Replace(" metres", "") ?? throw new InvalidOperationException());

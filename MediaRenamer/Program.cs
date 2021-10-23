@@ -6,10 +6,6 @@ using static MediaRenamer.FileHandle;
 
 namespace MediaRenamer {
     internal static class Program {
-        public static readonly List<string> VidExt = new List<string> {".mp4", ".mov", ".mts", ".mt2s"};
-        public static readonly List<string> PicExt = new List<string> {".dng", ".jpg", ".jpeg"};
-        // ReSharper disable once FieldCanBeMadeReadOnly.Global
-
         private static void Main() {
             Console.OutputEncoding = Encoding.UTF8;
 
@@ -22,6 +18,7 @@ namespace MediaRenamer {
             do {
                 dirInput = Console.ReadLine();
             } while (string.IsNullOrWhiteSpace(dirInput));
+
             Console.WriteLine();
 
             try {
@@ -36,7 +33,7 @@ namespace MediaRenamer {
             } catch (Exception ex) {
                 Console.WriteLine("[-Error-] " + ex.Message + " [Program Exiting...]");
             }
-            
+
             Console.Write("\nPress Any Key To Exit...");
             Console.ReadKey();
         }
@@ -47,13 +44,9 @@ namespace MediaRenamer {
                 if (fsInfo is DirectoryInfo) {
                     GetFiles(new DirectoryInfo(fsInfo.FullName), fileList);
                 } else {
-                    var fileExt = fsInfo.Extension.ToLower();
-                    if (PicExt.Contains(fileExt) || VidExt.Contains(fileExt)) {
-                        fileList.Add(fsInfo);
-                    }
+                    fileList.Add(fsInfo);
                 }
             }
-
             return fileList;
         }
     }

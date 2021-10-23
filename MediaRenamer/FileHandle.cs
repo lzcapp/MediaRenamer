@@ -2,57 +2,30 @@
 using System.IO;
 using System.Security.Cryptography;
 using static MediaRenamer.MetadataQuery;
-using static MediaRenamer.Program;
 
 namespace MediaRenamer {
     public static class FileHandle {
         internal static bool FileProcess(FileSystemInfo file) {
             try {
-                string strDt;
-                var fileExt = file.Extension.ToLower();
-                if (PicExt.Contains(fileExt)) {
-                    var dictResult = MetaQuery(file, true);
-                    if (dictResult == null) {
-                        Console.WriteLine("[-Error-] Pic MetaQuery returns NULL result: " + file.FullName + ".");
-                        return false;
-                    } else if (dictResult.ContainsKey("error")) {
-                        Console.WriteLine("[-Error-] Pic MetaQuery error: " + dictResult["error"] + ".");
-                        return false;
-                    } else {
-                        strDt = dictResult["datetime"];
-                        Rename(file, strDt);
-                    }
-                } else if (VidExt.Contains(fileExt)) {
-                    var dictResult = MetaQuery(file, false);
-                    if (dictResult == null) {
-                        Console.WriteLine("[-Error-] Vid MetaQuery returns NULL result: " + file.FullName + ".");
-                        return false;
-                    } else if (dictResult.ContainsKey("error")) {
-                        Console.WriteLine("[-Error-] Pic MetaQuery error: " + dictResult["error"] + ".");
-                        return false;
-                    } else {
-                        strDt = dictResult["datetime"];
-                        Rename(file, strDt);
-                    }
-                } else {
-                    var dictResult = MetaQuery(file, true);
-                    // try as pic
-                    if (dictResult == null || dictResult.ContainsKey("error")) {
-                        dictResult = MetaQuery(file, false);
-                        // or else try as vid
-                    }
+                var dictResult = MetaQuery(file, true);
 
-                    if (dictResult == null) {
-                        Console.WriteLine("[-Error-] MetaQuery returns NULL result: " + file.FullName + ".");
-                        return false;
-                    } else if (dictResult.ContainsKey("error")) {
-                        Console.WriteLine("[-Error-] MetaQuery error: " + dictResult["error"] + ".");
-                        return false;
-                    } else {
-                        strDt = dictResult["datetime"];
-                        Rename(file, strDt);
-                    }
+                if (dictResult == null || dictResult.ContainsKey("error")) {
+                    dictResult = null;
+                    dictResult = MetaQuery(file, false);
                 }
+
+                if (dictResult == null) {
+                    Console.WriteLine("[-Error-] MetaQuery returns NULL result: " + file.FullName + ".");
+                    return false;
+                }
+
+                if (dictResult.ContainsKey("error")) {
+                    Console.WriteLine("[-Error-] MetaQuery returns ERROR: " + file.FullName + ".");
+                    return false;
+                }
+
+                string strDt = dictResult["datetime"];
+                Rename(file, strDt);
             } catch (Exception ex) {
                 Console.WriteLine("[-Error-] FileProcess error: " + ex.Message + ".");
                 return false;
@@ -93,6 +66,7 @@ namespace MediaRenamer {
             if (filePath1 == filePath2) {
                 return true;
             }
+
             using (var hash = HashAlgorithm.Create()) {
                 using (FileStream file1 = new FileStream(filePath1, FileMode.Open),
                                   file2 = new FileStream(filePath2, FileMode.Open)) {
