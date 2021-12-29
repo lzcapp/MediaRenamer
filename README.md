@@ -100,26 +100,3 @@ if (File.Exists(Path.Combine(dirOutputFull + file.Extension))) {
   dirOutputFull = strDupName;
 }
 ```
-  
-### Export GPS Data with CSV output
-Export Photos' `GPS Data` into **[CSV](https://en.wikipedia.org/wiki/Comma-separated_values)** File.
-Currently Only **Image** Files' GPS Data will be Extracted and Exported.
-
-#### String Formating for CSV File
-```c#
-str = str.Replace("\"", "\"\"");
-if (str.Contains(',') || str.Contains('"') || str.Contains('\r') || str.Contains('\n')) {
-  str = $"\"{str}\"";
-}
-```
-
-#### CSV File ~~I/~~ O (Only Output :stuck_out_tongue_winking_eye:)
-```c#
-var csvPath = Path.Combine(dirInput + "output.csv");
-var csvFileStream = new FileStream(csvPath, FileMode.Create, FileAccess.Write);
-var csvStreamWriter = new StreamWriter(csvFileStream, Encoding.UTF8);
-var data = OutputCsv(file, strDtResult);
-csvStreamWriter.WriteLine(data);
-csvStreamWriter.Close();
-csvFileStream.Close();
-```
