@@ -4,9 +4,12 @@ using System.IO;
 using System.Text;
 using static MediaRenamer.FileHandle;
 
-namespace MediaRenamer {
-    internal static class Program {
-        private static void Main() {
+namespace MediaRenamer
+{
+    internal static class Program
+    {
+        private static void Main()
+        {
             Console.OutputEncoding = Encoding.UTF8;
 
             Console.WriteLine("Copyright \u00a9 2019 RainySummer, All Rights Reserved.");
@@ -15,22 +18,29 @@ namespace MediaRenamer {
             Console.WriteLine("Please Input the Folder Path:");
             Console.Write(">> ");
             string dirInput;
-            do {
+            do
+            {
                 dirInput = Console.ReadLine();
             } while (string.IsNullOrWhiteSpace(dirInput));
 
             Console.WriteLine();
 
-            try {
+            try
+            {
                 var diPath = new DirectoryInfo(dirInput);
                 var fileList = new List<FileSystemInfo>();
                 fileList = GetFiles(diPath, fileList);
-                foreach (var file in fileList) {
+                foreach (var file in fileList)
+                {
                     FileProcess(file);
                 }
-            } catch (DirectoryNotFoundException) {
+            }
+            catch (DirectoryNotFoundException)
+            {
                 Console.WriteLine("[-Error-] The folder does not exist. [Program Exiting...]");
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine("[-Error-] " + ex.Message + " [Program Exiting...]");
             }
 
@@ -38,12 +48,17 @@ namespace MediaRenamer {
             Console.ReadKey();
         }
 
-        private static List<FileSystemInfo> GetFiles(DirectoryInfo dirInfo, List<FileSystemInfo> fileList) {
+        private static List<FileSystemInfo> GetFiles(DirectoryInfo dirInfo, List<FileSystemInfo> fileList)
+        {
             var fsInfos = dirInfo.GetFileSystemInfos();
-            foreach (var fsInfo in fsInfos) {
-                if (fsInfo is DirectoryInfo) {
+            foreach (var fsInfo in fsInfos)
+            {
+                if (fsInfo is DirectoryInfo)
+                {
                     GetFiles(new DirectoryInfo(fsInfo.FullName), fileList);
-                } else {
+                }
+                else
+                {
                     fileList.Add(fsInfo);
                 }
             }
