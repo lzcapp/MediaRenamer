@@ -62,10 +62,6 @@ namespace MediaRenamer {
         }
 
         private static bool FileCompare(string filePath1, string filePath2) {
-            if (filePath1 == filePath2) {
-                return true;
-            }
-
             using (var hash = HashAlgorithm.Create()) {
                 using (FileStream file1 = new(filePath1, FileMode.Open),
                                   file2 = new(filePath2, FileMode.Open)) {
