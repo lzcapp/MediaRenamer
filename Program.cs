@@ -10,9 +10,9 @@ namespace MediaRenamer {
             Console.WriteLine(">> A tool for renaming multi-media files.\n");
 
             Console.WriteLine("Please Input the Folder Path:");
-            Console.Write(">> ");
             string dirInput;
             do {
+                Console.Write(">> ");
                 dirInput = Console.ReadLine();
             } while (string.IsNullOrWhiteSpace(dirInput));
 
@@ -26,12 +26,12 @@ namespace MediaRenamer {
                     FileProcess(file);
                 }
             } catch (DirectoryNotFoundException) {
-                Console.WriteLine("[-Error-] The folder does not exist. [Program Exiting...]");
+                Console.WriteLine("[-Error-] The folder does not exist.");
             } catch (Exception ex) {
-                Console.WriteLine("[-Error-] " + ex.Message + " [Program Exiting...]");
+                Console.WriteLine("[-Error-] " + ex.Message);
             }
 
-            Console.Write("\nPress Any Key To Exit...");
+            Console.WriteLine("Press Any Key To Exit...");
             Console.ReadKey();
         }
 
