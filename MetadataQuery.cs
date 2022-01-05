@@ -7,10 +7,10 @@ using Directory = MetadataExtractor.Directory;
 
 namespace MediaRenamer {
     public static class MetadataQuery {
-        public static Dictionary<string, string> MetaQuery(FileSystemInfo file, bool filetype) {
+        public static Dictionary<string, string>? MetaQuery(FileSystemInfo file, bool filetype) {
             try {
                 Dictionary<string, string> dictResult;
-                Dictionary<string, string> dictDatetime;
+                Dictionary<string, string>? dictDatetime;
 
                 switch (filetype) {
                     case true:
@@ -44,10 +44,9 @@ namespace MediaRenamer {
             } catch (Exception) {
                 return null;
             }
-            return null;
         }
 
-        private static Dictionary<string, string> PicDtQuery(IReadOnlyList<Directory> directories) {
+        private static Dictionary<string, string>? PicDtQuery(IReadOnlyList<Directory> directories) {
             try {
                 var subdirDt = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
                 var strDt = subdirDt?.GetDescription(ExifDirectoryBase.TagDateTime);
@@ -69,7 +68,7 @@ namespace MediaRenamer {
             }
         }
 
-        private static Dictionary<string, string> VidDtQuery(FileSystemInfo file) {
+        private static Dictionary<string, string>? VidDtQuery(FileSystemInfo file) {
             string strDt;
             var isApple = false;
             var mi = new MediaInfo();
