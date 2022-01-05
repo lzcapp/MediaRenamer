@@ -39,35 +39,36 @@ namespace MediaRenamer {
             var strExt = file.Extension.ToLower();
             var intDupInx = 0;
             var strDupName = strFullName + strExt;
-
-            var fileInfo = new FileInfo(strOriginName);
+            if (File.Exists(strDupName) && FileCompare(strDupName, strOriginName)) {
+                Console.WriteLine("[Skipped] " + file.FullName);
+                return;
+            }
 
             while (File.Exists(strDupName)) {
-                if (FileCompare(strDupName, strOriginName)) {
-                    fileInfo.Delete();
-                    Console.WriteLine("[Skipped] " + file.FullName);
-                    return;
-                }
                 intDupInx++;
-                strDupName = strFullName + "_" + intDupInx + strExt;
+                var strDupInx = "_" + intDupInx;
+                strDupName = strFullName + strDupInx + strExt;
             }
 
             var strNewName = strDupName;
             try {
+                var fileInfo = new FileInfo(strOriginName);
                 fileInfo.MoveTo(strNewName);
-                Console.WriteLine("[-Moved-] " + strNewName);
+                Console.WriteLine("[-Moved-] " + " --> " + strNewName);
             } catch (Exception) {
-                Console.WriteLine("[-Error-] Error renaming");
+                Console.WriteLine("[-Error-] " + " --> Error rename");
             }
         }
 
         private static bool FileCompare(string filePath1, string filePath2) {
             using (var hash = HashAlgorithm.Create()) {
-                using (FileStream file1 = new(filePath1, FileMode.Open),
-                                  file2 = new(filePath2, FileMode.Open)) {
+                using (FileStream file1 = new FileStream(filePath1, FileMode.Open),
+                                  file2 = new FileStream(filePath2, FileMode.Open)) {
                     var hashByte1 = hash.ComputeHash(file1);
                     var hashByte2 = hash.ComputeHash(file2);
-                    return hashByte1 == hashByte2;
+                    var fileByte1 = BitConverter.ToString(hashByte1);
+                    var fileByte2 = BitConverter.ToString(hashByte2);
+                    return fileByte1 == fileByte2;
                 }
             }
         }
