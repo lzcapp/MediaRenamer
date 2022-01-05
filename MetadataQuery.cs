@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using MediaInfoLib;
+﻿using MediaInfoLib;
 using MetadataExtractor.Formats.Exif;
+using System.Globalization;
 using static MetadataExtractor.ImageMetadataReader;
 using static System.TimeZoneInfo;
 using Directory = MetadataExtractor.Directory;
@@ -19,7 +15,7 @@ namespace MediaRenamer {
                 switch (filetype) {
                     case true:
                         // file type is image
-                        dictResult = new Dictionary<string, string> {{"type", "Pic"}};
+                        dictResult = new Dictionary<string, string> { { "type", "Pic" } };
                         var directories = ReadMetadata(file.FullName);
                         dictDatetime = PicDtQuery(directories);
                         if (dictDatetime != null) {
@@ -33,7 +29,7 @@ namespace MediaRenamer {
                         return dictResult;
                     case false:
                         // file type is video
-                        dictResult = new Dictionary<string, string> {{"type", "Vid"}};
+                        dictResult = new Dictionary<string, string> { { "type", "Vid" } };
                         dictDatetime = VidDtQuery(file);
                         if (dictDatetime != null) {
                             foreach (var dt in dictDatetime) {
