@@ -28,7 +28,7 @@ namespace MediaRenamer {
             } catch (DirectoryNotFoundException) {
                 Console.WriteLine("[-Error-] The folder does not exist.");
             } catch (Exception ex) {
-                Console.WriteLine("[-Error-] " + ex.Message);
+                Console.WriteLine("[-Error-] Main: " + ex.Message);
             }
 
             Console.WriteLine("Press Any Key To Exit...");
