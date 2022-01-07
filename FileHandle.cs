@@ -26,14 +26,7 @@ namespace MediaRenamer {
             var strPath = file.FullName.Replace(file.Name, "");
             var strFullName = Path.Combine(strPath, strDt);
             var strExt = file.Extension.ToLower();
-            var strMD5 = "";
-
-            using (var md5Instance = MD5.Create()) {
-                using (var stream = File.OpenRead(file.FullName)) {
-                    var fileHash = md5Instance.ComputeHash(stream);
-                    strMD5 = BitConverter.ToString(fileHash).Replace("-", "").ToLowerInvariant();
-                }
-            }
+            var strMD5 = CalculateHash(file);
 
             var strOutName = strFullName + "_" + strMD5 + strExt;
 
@@ -49,6 +42,17 @@ namespace MediaRenamer {
             } catch (Exception ex) {
                 Console.WriteLine("[-Error-] Rename Error: " + ex.Message);
             }
+        }
+
+        private static string CalculateHash(FileSystemInfo file) {
+            string strMD5;
+            using (var md5Instance = MD5.Create()) {
+                using (var stream = File.OpenRead(file.FullName)) {
+                    var fileHash = md5Instance.ComputeHash(stream);
+                    strMD5 = BitConverter.ToString(fileHash).Replace("-", "").ToLowerInvariant();
+                }
+            }
+            return strMD5;
         }
     }
 }
