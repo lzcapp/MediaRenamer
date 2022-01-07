@@ -1,129 +1,121 @@
-﻿using MediaInfoLib;
+﻿using MediaInfo;
 using MetadataExtractor.Formats.Exif;
 using System.Globalization;
 using static MetadataExtractor.ImageMetadataReader;
 using static System.TimeZoneInfo;
-using Directory = MetadataExtractor.Directory;
 
 namespace MediaRenamer {
     public static class MetadataQuery {
-        public static Dictionary<string, string>? MetaQuery(FileSystemInfo file, bool filetype) {
+        private const string strDtFormat = "yyyy.MM.dd_HHmmss";
+        private static Dictionary<string, string> dictResult = new();
+
+        public static Dictionary<string, string> MetaQuery(FileSystemInfo file) {
             try {
-                Dictionary<string, string> dictResult;
-                Dictionary<string, string>? dictDatetime;
+                Dictionary<string, string> dictDatetime;
 
-                switch (filetype) {
-                    case true:
-                        // file type is image
-                        dictResult = new Dictionary<string, string> { { "type", "Pic" } };
-                        var directories = ReadMetadata(file.FullName);
-                        dictDatetime = PicDtQuery(directories);
-                        if (dictDatetime != null) {
-                            foreach (var dt in dictDatetime) {
-                                dictResult.Add(dt.Key, dt.Value);
-                            }
-                        } else {
-                            return null;
-                        }
+                dictResult = new Dictionary<string, string> { { "type", "Pic" } };
+                dictDatetime = PicDtQuery(file);
 
+                if (dictDatetime.ContainsKey("error")) {
+                    dictResult = new Dictionary<string, string> { { "type", "Vid" } };
+                    dictDatetime = VidDtQuery(file);
+                    if (dictDatetime.ContainsKey("error")) {
+                        dictResult.Add("error", "MetaQuery Failed.");
                         return dictResult;
-                    case false:
-                        // file type is video
-                        dictResult = new Dictionary<string, string> { { "type", "Vid" } };
-                        dictDatetime = VidDtQuery(file);
-                        if (dictDatetime != null) {
-                            foreach (var dt in dictDatetime) {
-                                dictResult.Add(dt.Key, dt.Value);
-                            }
-                        } else {
-                            return null;
-                        }
-
-                        return dictResult;
+                    }
                 }
-            } catch (Exception) {
-                return null;
+                foreach (var dt in dictDatetime) {
+                    dictResult.Add(dt.Key, dt.Value);
+                }
+                return dictResult;
+            } catch (Exception ex) {
+                dictResult.Add("error", "Exception MetadataQuery " + ex.Message);
+                return dictResult;
             }
         }
 
-        private static Dictionary<string, string>? PicDtQuery(IReadOnlyList<Directory> directories) {
+        private static Dictionary<string, string> PicDtQuery(FileSystemInfo file) {
+            var dictDt = new Dictionary<string, string>();
+            const string strFormat = "yyyy:MM:dd HH:mm:ss";
             try {
+                var directories = ReadMetadata(file.FullName);
                 var subdirDt = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
                 var strDt = subdirDt?.GetDescription(ExifDirectoryBase.TagDateTime);
-                const string strDtFormat = "yyyy.MM.dd_HHmmss";
-                var dtDt = DateTime.ParseExact(strDt, "yyyy:MM:dd HH:mm:ss", CultureInfo.CurrentCulture);
+                if (string.IsNullOrEmpty(strDt)) {
+                    dictDt.Add("error", "Pic: No DateTime.");
+                    return dictDt;
+                }
+
+                var dtDt = DateTime.ParseExact(strDt, strFormat, CultureInfo.CurrentCulture);
+
+                /*
                 var startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1, 0, 0, 0, 0));
                 var timestamp = (dtDt.Ticks - startTime.Ticks) / 10000;
                 if (timestamp == 0) {
                     return null;
                 }
+                */
 
-                var dictDt = new Dictionary<string, string> {
-                    {"datetime", dtDt.ToString(strDtFormat)},
-                    {"timestamp", timestamp + ""}
-                };
+                dictDt.Add("datetime", dtDt.ToString(strDtFormat));
                 return dictDt;
-            } catch (Exception) {
-                return null;
+            } catch (Exception ex) {
+                dictDt.Add("error", "Exception PicDtQuery " + ex.Message);
+                return dictDt;
             }
         }
 
-        private static Dictionary<string, string>? VidDtQuery(FileSystemInfo file) {
+        private static Dictionary<string, string> VidDtQuery(FileSystemInfo file) {
+            var dictDt = new Dictionary<string, string>();
+            const string strFormat = "yyyy-MM-dd HH:mm:ss";
+            const string strAppleFormat = "yyyy:MM:ddTHH:mm:ss";
             string strDt;
-            var isApple = false;
-            var mi = new MediaInfo();
-            mi.Open(file.FullName);
+            bool isApple = false;
             try {
+                var mi = new MediaInfo.MediaInfo();
+                mi.Open(file.FullName);
+
                 strDt = mi.Get(StreamKind.Video, 0, "Encoded_Date");
                 if (string.IsNullOrEmpty(strDt)) {
                     strDt = mi.Get(StreamKind.Video, 0, "Tagged_Date");
                 }
-
                 if (string.IsNullOrEmpty(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "Recorded_Date");
                 }
-
                 if (string.IsNullOrEmpty(strDt)) {
                     isApple = true;
-                    strDt =
-                        mi.Get(StreamKind.General, 0, "com.apple.quicktime.creationdate");
+                    strDt = mi.Get(StreamKind.General, 0, "com.apple.quicktime.creationdate");
                 }
-            } catch (Exception) {
+
                 mi.Dispose();
-                return null;
+                DateTime dtDt;
+                if (isApple) {
+                    if (strDt.Length > 19) {
+                        var strTz = strDt[19..];
+                        strDt = strDt[..19];
+                    }
+                    dtDt = DateTime.ParseExact(strDt, strAppleFormat, CultureInfo.CurrentCulture);
+                } else {
+                    if (strDt.Length > 19) {
+                        var strTz = strDt[..3];
+                        strDt = strDt[4..];
+                    }
+                    dtDt = DateTime.ParseExact(strDt, strFormat, CultureInfo.CurrentCulture);
+                    dtDt = ConvertTimeFromUtc(dtDt, Local);
+                }
+                dictDt.Add("datetime", dtDt.ToString(strDtFormat));
+                return dictDt;
+            } catch (Exception ex) {
+                dictDt.Add("error", "Exception VidDtQuery " + ex.Message);
+                return dictDt;
             }
 
-            mi.Dispose();
-
-            string strSourceDtFormat;
-            if (isApple) {
-                strSourceDtFormat = "yyyy-MM-ddTHH:mm:ss";
-                if (strDt.Length > 19) {
-                    var strTz = strDt.Substring(19);
-                    strDt = strDt.Replace(strTz, "");
-                }
-            } else {
-                strSourceDtFormat = "yyyy-MM-dd HH:mm:ss";
-                if (strDt.Length > 19) {
-                    var strTz = strDt.Substring(0, 3);
-                    strDt = strDt.Replace(strTz + " ", "");
-                }
-            }
-
-            var dtDt = DateTime.ParseExact(strDt, strSourceDtFormat, CultureInfo.CurrentCulture);
-            dtDt = ConvertTimeFromUtc(dtDt, Local);
+            /*
             var startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1, 0, 0, 0, 0));
             var timestamp = (dtDt.Ticks - startTime.Ticks) / 10000;
             if (timestamp == 0) {
                 return null;
             }
-
-            const string strDtFormat = "yyyy.MM.dd_HHmmss";
-            var dictDt = new Dictionary<string, string> {
-                {"datetime", dtDt.ToString(strDtFormat)},
-                {"timestamp", timestamp + ""}
-            };
-            return dictDt;
+            */
         }
     }
 }
