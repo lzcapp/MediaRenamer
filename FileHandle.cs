@@ -32,7 +32,6 @@ namespace MediaRenamer {
 
             var fileInfo = new FileInfo(file.FullName);
             if (File.Exists(strOutName)) {
-                fileInfo.Delete();
                 return;
             }
 
