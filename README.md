@@ -87,8 +87,6 @@ ConvertTimeFromUtc(dtUtc, Local)
 
 ### MD5
 
-**Format:** xxx<b>\_1</b>.jpg / xxx<b>\_2</b>.jpg / ...
-
 ```c#
 string strMD5;
 using (var md5Instance = MD5.Create()) {
