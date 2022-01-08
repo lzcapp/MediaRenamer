@@ -3,12 +3,17 @@ using static MediaRenamer.MetadataQuery;
 
 namespace MediaRenamer {
     public static class FileHandle {
+        private const string strDtFormat = "yyyy.MM.dd_HHmmss";
+
         internal static bool FileProcess(FileSystemInfo file) {
             try {
                 var dictResult = MetaQuery(file);
 
                 if (dictResult.ContainsKey("error")) {
-                    Console.WriteLine("[-Error-] MetaQuery Error: " + file.FullName + ".");
+                    string fileName = file.Name;
+                    fileName = fileName[..17];
+                    var dtDt = DateTime.ParseExact(fileName, strDtFormat, System.Globalization.CultureInfo.CurrentCulture);
+                    Rename(file, dtDt.ToString(strDtFormat));
                     return false;
                 }
 
