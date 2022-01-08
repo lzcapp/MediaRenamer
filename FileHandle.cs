@@ -48,10 +48,10 @@ namespace MediaRenamer {
             using (var md5Instance = MD5.Create()) {
                 using (var stream = File.OpenRead(file.FullName)) {
                     var fileHash = md5Instance.ComputeHash(stream);
-                    strMD5 = BitConverter.ToString(fileHash).Replace("-", "").ToLowerInvariant();
+                    strMD5 = BitConverter.ToString(fileHash).Replace("-", "").ToUpperInvariant();
                 }
             }
-            return strMD5;
+            return strMD5[..3] + strMD5[^3..^0];
         }
     }
 }
