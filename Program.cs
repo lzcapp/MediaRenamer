@@ -11,37 +11,16 @@ namespace MediaRenamer {
 
             Console.WriteLine();
 
-            try {
-                var diPath = new DirectoryInfo(args[0]);
-                var fileList = new List<FileSystemInfo>();
-                fileList = GetFiles(diPath, fileList);
-                foreach (var file in fileList) {
-                    FileProcess(file);
-                }
-            } catch (DirectoryNotFoundException) {
-                Console.WriteLine("[-Error-] The folder does not exist.");
-            } catch (Exception ex) {
-                Console.WriteLine("[-Error-] Main: " + ex.Message);
-            }
-
-            Console.WriteLine("Press Any Key To Exit...");
-            Console.ReadKey();
-        }
-
-        private static void Main() {
-            Console.OutputEncoding = Encoding.UTF8;
-
-            Console.WriteLine("Copyright \u00a9 2019 RainySummer, All Rights Reserved.");
-            Console.WriteLine(">> A tool for renaming multi-media files.\n");
-
-            Console.WriteLine("Please Input the Folder Path:");
             string dirInput;
-            do {
-                Console.Write(">> ");
-                dirInput = Console.ReadLine();
-            } while (string.IsNullOrWhiteSpace(dirInput));
 
-            Console.WriteLine();
+            if (args == null || args.Length == 0) {
+                do {
+                    Console.Write(">> ");
+                    dirInput = Console.ReadLine();
+                } while (string.IsNullOrWhiteSpace(dirInput));
+            } else {
+                dirInput = args[0];
+            }
 
             try {
                 var diPath = new DirectoryInfo(dirInput);
