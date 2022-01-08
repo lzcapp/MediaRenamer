@@ -19,16 +19,16 @@ A Tool to **Rename** Media Files by Their `Taken Date`.
 ## Parameters List
 
 - MediaInfo:
-  [MediaInfo_Parameters_List.md](../MediaInfo_Parameters_List.md)
+  [MediaInfo_Parameters_List.md](https://github.com/RainySummerLuo/MediaRenamer/blob/master/MediaInfo_Parameters_List.md)
 
 ## Metadata Sample
 
 (Only Some Specific Types, You Should Also Check Your Own Files)
 
 - Image:
-  [MetadataExtractor_Exif_Output.md](../MetadataExtractor_Exif_Output.md)
+  [MetadataExtractor_Exif_Output.md](https://github.com/RainySummerLuo/MediaRenamer/blob/master/MetadataExtractor_Exif_Output.md)
 - Video:
-  [MediaInfo_Ouput.md](../MediaInfo_Ouput.md)
+  [MediaInfo_Ouput.md](https://github.com/RainySummerLuo/MediaRenamer/blob/master/MediaInfo_Ouput.md)
 
 ## Implementation
 
