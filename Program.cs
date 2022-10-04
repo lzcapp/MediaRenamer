@@ -6,17 +6,17 @@ namespace MediaRenamer {
         private static void Main(string[] args) {
             Console.OutputEncoding = Encoding.UTF8;
 
-            Console.WriteLine("Copyright \u00a9 2019 RainySummer, All Rights Reserved.");
+            Console.WriteLine("Copyright \u00a9 2022 RainySummer, All Rights Reserved.");
             Console.WriteLine(">> A tool for renaming multi-media files.\n");
 
             Console.WriteLine();
 
             string dirInput;
 
-            if (args == null || args.Length == 0) {
+            if (args.Length == 0) {
                 do {
                     Console.Write(">> ");
-                    dirInput = Console.ReadLine();
+                    dirInput = Console.ReadLine() ?? string.Empty;
                 } while (string.IsNullOrWhiteSpace(dirInput));
             } else {
                 dirInput = args[0];
