@@ -6,31 +6,29 @@ using static System.TimeZoneInfo;
 
 namespace MediaRenamer {
     public static class MetadataQuery {
-        private const string strDtFormat = "yyyy.MM.dd_HHmmss";
-        private static Dictionary<string, string> dictResult = new();
+        private const string StrDtFormat = "yyyy.MM.dd_HHmmss";
+        private static Dictionary<string, string> _dictResult = new();
 
         public static Dictionary<string, string> MetaQuery(FileSystemInfo file) {
             try {
-                Dictionary<string, string> dictDatetime;
-
-                dictResult = new Dictionary<string, string> { { "type", "Pic" } };
-                dictDatetime = PicDtQuery(file);
+                _dictResult = new Dictionary<string, string> { { "type", "Pic" } };
+                var dictDatetime = PicDtQuery(file);
 
                 if (dictDatetime.ContainsKey("error")) {
-                    dictResult = new Dictionary<string, string> { { "type", "Vid" } };
+                    _dictResult = new Dictionary<string, string> { { "type", "Vid" } };
                     dictDatetime = VidDtQuery(file);
                     if (dictDatetime.ContainsKey("error")) {
-                        dictResult.Add("error", "MetaQuery Failed.");
-                        return dictResult;
+                        _dictResult.Add("error", "MetaQuery Failed.");
+                        return _dictResult;
                     }
                 }
                 foreach (var dt in dictDatetime) {
-                    dictResult.Add(dt.Key, dt.Value);
+                    _dictResult.Add(dt.Key, dt.Value);
                 }
-                return dictResult;
+                return _dictResult;
             } catch (Exception ex) {
-                dictResult.Add("error", "Exception MetadataQuery " + ex.Message);
-                return dictResult;
+                _dictResult.Add("error", "Exception MetadataQuery " + ex.Message);
+                return _dictResult;
             }
         }
 
@@ -56,7 +54,7 @@ namespace MediaRenamer {
                 }
                 */
 
-                dictDt.Add("datetime", dtDt.ToString(strDtFormat));
+                dictDt.Add("datetime", dtDt.ToString(StrDtFormat));
                 return dictDt;
             } catch (Exception ex) {
                 dictDt.Add("error", "Exception PicDtQuery " + ex.Message);
@@ -68,13 +66,12 @@ namespace MediaRenamer {
             var dictDt = new Dictionary<string, string>();
             const string strFormat = "yyyy-MM-dd HH:mm:ss";
             const string strAppleFormat = "yyyy:MM:ddTHH:mm:ss";
-            string strDt;
-            bool isApple = false;
+            var isApple = false;
             try {
                 var mi = new MediaInfo.MediaInfo();
                 mi.Open(file.FullName);
 
-                strDt = mi.Get(StreamKind.Video, 0, "Encoded_Date");
+                var strDt = mi.Get(StreamKind.Video, 0, "Encoded_Date");
                 if (string.IsNullOrEmpty(strDt)) {
                     strDt = mi.Get(StreamKind.Video, 0, "Tagged_Date");
                 }
@@ -102,7 +99,7 @@ namespace MediaRenamer {
                     dtDt = DateTime.ParseExact(strDt, strFormat, CultureInfo.CurrentCulture);
                     dtDt = ConvertTimeFromUtc(dtDt, Local);
                 }
-                dictDt.Add("datetime", dtDt.ToString(strDtFormat));
+                dictDt.Add("datetime", dtDt.ToString(StrDtFormat));
                 return dictDt;
             } catch (Exception ex) {
                 dictDt.Add("error", "Exception VidDtQuery " + ex.Message);
