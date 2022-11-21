@@ -1,54 +1,58 @@
 ﻿using System.Text;
 using static MediaRenamer.FileHandle;
 
-namespace MediaRenamer {
-    internal static class Program {
-        private static void Main(string[] args) {
-            Console.OutputEncoding = Encoding.UTF8;
+namespace MediaRenamer;
 
-            Console.WriteLine("Copyright \u00a9 2022 RainySummer, All Rights Reserved.");
-            Console.WriteLine(">> A tool for renaming multi-media files.\n");
+internal static class Program
+{
+    private static void Main(string[] args)
+    {
+        Console.OutputEncoding = Encoding.UTF8;
 
-            Console.WriteLine();
+        Console.WriteLine("Copyright \u00a9 2022 RainySummer, All Rights Reserved.");
+        Console.WriteLine(">> A tool for renaming multi-media files.\n");
 
-            string dirInput;
+        Console.WriteLine();
 
-            if (args.Length == 0) {
-                do {
-                    Console.Write(">> ");
-                    dirInput = Console.ReadLine() ?? string.Empty;
-                } while (string.IsNullOrWhiteSpace(dirInput));
-            } else {
-                dirInput = args[0];
-            }
+        string dirInput;
 
-            try {
-                var diPath = new DirectoryInfo(dirInput);
-                var fileList = new List<FileSystemInfo>();
-                fileList = GetFiles(diPath, fileList);
-                foreach (var file in fileList) {
-                    FileProcess(file);
-                }
-            } catch (DirectoryNotFoundException) {
-                Console.WriteLine("[-Error-] The folder does not exist.");
-            } catch (Exception ex) {
-                Console.WriteLine("[-Error-] Main: " + ex.Message);
-            }
+        if (args.Length == 0)
+            do
+            {
+                Console.Write(">> ");
+                dirInput = Console.ReadLine() ?? string.Empty;
+            } while (string.IsNullOrWhiteSpace(dirInput));
+        else
+            dirInput = args[0];
 
-            Console.WriteLine("Press Any Key To Exit...");
-            Console.ReadKey();
+        try
+        {
+            var diPath = new DirectoryInfo(dirInput);
+            var fileList = new List<FileSystemInfo>();
+            fileList = GetFiles(diPath, fileList);
+            foreach (var file in fileList) FileProcess(file);
+        }
+        catch (DirectoryNotFoundException)
+        {
+            Console.WriteLine("[-Error-] The folder does not exist.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[-Error-] Main: " + ex.Message);
         }
 
-        private static List<FileSystemInfo> GetFiles(DirectoryInfo dirInfo, List<FileSystemInfo> fileList) {
-            var fsInfos = dirInfo.GetFileSystemInfos();
-            foreach (var fsInfo in fsInfos) {
-                if (fsInfo is DirectoryInfo) {
-                    GetFiles(new DirectoryInfo(fsInfo.FullName), fileList);
-                } else {
-                    fileList.Add(fsInfo);
-                }
-            }
-            return fileList;
-        }
+        Console.WriteLine("Press Any Key To Exit...");
+        Console.ReadKey();
+    }
+
+    private static List<FileSystemInfo> GetFiles(DirectoryInfo dirInfo, List<FileSystemInfo> fileList)
+    {
+        var fsInfos = dirInfo.GetFileSystemInfos();
+        foreach (var fsInfo in fsInfos)
+            if (fsInfo is DirectoryInfo)
+                GetFiles(new DirectoryInfo(fsInfo.FullName), fileList);
+            else
+                fileList.Add(fsInfo);
+        return fileList;
     }
 }
