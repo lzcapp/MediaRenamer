@@ -27,7 +27,7 @@ namespace MediaRenamer {
                 }
                 return _dictResult;
             } catch (Exception ex) {
-                _dictResult.Add("error", "Exception MetadataQuery " + ex.Message);
+                _dictResult.Add("error", "MetaQuery Exception Caught." + ex.Message);
                 return _dictResult;
             }
         }
@@ -87,13 +87,11 @@ namespace MediaRenamer {
                 DateTime dtDt;
                 if (isApple) {
                     if (strDt.Length > 19) {
-                        var strTz = strDt[19..];
                         strDt = strDt[..19];
                     }
                     dtDt = DateTime.ParseExact(strDt, strAppleFormat, CultureInfo.CurrentCulture);
                 } else {
                     if (strDt.Length > 19) {
-                        var strTz = strDt[..3];
                         strDt = strDt[4..];
                     }
                     dtDt = DateTime.ParseExact(strDt, strFormat, CultureInfo.CurrentCulture);
@@ -105,14 +103,6 @@ namespace MediaRenamer {
                 dictDt.Add("error", "Exception VidDtQuery " + ex.Message);
                 return dictDt;
             }
-
-            /*
-            var startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1, 0, 0, 0, 0));
-            var timestamp = (dtDt.Ticks - startTime.Ticks) / 10000;
-            if (timestamp == 0) {
-                return null;
-            }
-            */
         }
     }
 }
