@@ -3,10 +3,8 @@ using static MediaRenamer.FileHandle;
 
 namespace MediaRenamer;
 
-internal static class Program
-{
-    private static void Main(string[] args)
-    {
+internal static class Program {
+    private static void Main(string[] args) {
         Console.OutputEncoding = Encoding.UTF8;
 
         Console.WriteLine("Copyright \u00a9 2022 RainySummer, All Rights Reserved.");
@@ -17,27 +15,21 @@ internal static class Program
         string dirInput;
 
         if (args.Length == 0)
-            do
-            {
+            do {
                 Console.Write(">> ");
                 dirInput = Console.ReadLine() ?? string.Empty;
             } while (string.IsNullOrWhiteSpace(dirInput));
         else
             dirInput = args[0];
 
-        try
-        {
+        try {
             var diPath = new DirectoryInfo(dirInput);
             var fileList = new List<FileSystemInfo>();
             fileList = GetFiles(diPath, fileList);
             foreach (var file in fileList) FileProcess(file);
-        }
-        catch (DirectoryNotFoundException)
-        {
+        } catch (DirectoryNotFoundException) {
             Console.WriteLine("[-Error-] The folder does not exist.");
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Console.WriteLine("[-Error-] Main: " + ex.Message);
         }
 
@@ -45,8 +37,7 @@ internal static class Program
         Console.ReadKey();
     }
 
-    private static List<FileSystemInfo> GetFiles(DirectoryInfo dirInfo, List<FileSystemInfo> fileList)
-    {
+    private static List<FileSystemInfo> GetFiles(DirectoryInfo dirInfo, List<FileSystemInfo> fileList) {
         var fsInfos = dirInfo.GetFileSystemInfos();
         foreach (var fsInfo in fsInfos)
             if (fsInfo is DirectoryInfo)

@@ -12,7 +12,7 @@ namespace MediaRenamer {
                 if (dictResult.ContainsKey("error")) {
                     var fileName = file.Name;
                     fileName = fileName[..17];
-                    var dtDt = DateTime.ParseExact(fileName, StrDtFormat, System.Globalization.CultureInfo.CurrentCulture);
+                    var dtDt = DateTime.ParseExact(fileName, StrDtFormat, System.Globalization.CultureInfo.InvariantCulture);
                     Rename(file, dtDt.ToString(StrDtFormat));
                     return false;
                 }

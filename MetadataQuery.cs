@@ -2,7 +2,6 @@
 using MetadataExtractor.Formats.Exif;
 using System.Globalization;
 using static MetadataExtractor.ImageMetadataReader;
-using static System.TimeZoneInfo;
 
 namespace MediaRenamer {
     public static class MetadataQuery {
@@ -40,19 +39,19 @@ namespace MediaRenamer {
                 var subdirDt = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
                 var strDt = subdirDt?.GetDescription(ExifDirectoryBase.TagDateTime);
                 if (string.IsNullOrEmpty(strDt)) {
-                    dictDt.Add("error", "Pic: No DateTime.");
-                    return dictDt;
+                    var subdirDt2 = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
+                    strDt = subdirDt2?.GetDescription(ExifDirectoryBase.TagDateTimeOriginal);
+                    if (string.IsNullOrEmpty(strDt)) {
+                        strDt = subdirDt2?.GetDescription(ExifDirectoryBase.TagDateTimeDigitized);
+                        if (string.IsNullOrEmpty(strDt)) {
+                            dictDt.Add("error", "Pic: No DateTime.");
+                            return dictDt;
+                        }
+                    }
                 }
 
-                var dtDt = DateTime.ParseExact(strDt, strFormat, CultureInfo.CurrentCulture);
-
-                /*
-                var startTime = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1, 0, 0, 0, 0));
-                var timestamp = (dtDt.Ticks - startTime.Ticks) / 10000;
-                if (timestamp == 0) {
-                    return null;
-                }
-                */
+                strDt = strDt[..19];
+                var dtDt = DateTime.ParseExact(strDt, strFormat, CultureInfo.InvariantCulture);
 
                 dictDt.Add("datetime", dtDt.ToString(StrDtFormat));
                 return dictDt;
@@ -71,12 +70,15 @@ namespace MediaRenamer {
                 var mi = new MediaInfo.MediaInfo();
                 mi.Open(file.FullName);
 
-                var strDt = mi.Get(StreamKind.Video, 0, "Encoded_Date");
+                var strDt = mi.Get(StreamKind.General, 0, "Encoded_Date");
                 if (string.IsNullOrEmpty(strDt)) {
-                    strDt = mi.Get(StreamKind.Video, 0, "Tagged_Date");
+                    strDt = mi.Get(StreamKind.General, 0, "Tagged_Date");
                 }
                 if (string.IsNullOrEmpty(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "Recorded_Date");
+                }
+                if (string.IsNullOrEmpty(strDt)) {
+                    strDt = mi.Get(StreamKind.General, 0, "Mastered_Date");
                 }
                 if (string.IsNullOrEmpty(strDt)) {
                     isApple = true;
@@ -85,17 +87,20 @@ namespace MediaRenamer {
 
                 mi.Dispose();
                 DateTime dtDt;
+                int diff;
                 if (isApple) {
-                    if (strDt.Length > 19) {
-                        strDt = strDt[..19];
-                    }
-                    dtDt = DateTime.ParseExact(strDt, strAppleFormat, CultureInfo.CurrentCulture);
+                    strDt = strDt[..19];
+                    diff = int.Parse(strDt[19..]);
+                    dtDt = DateTime.ParseExact(strDt, strAppleFormat, CultureInfo.InvariantCulture);
                 } else {
-                    if (strDt.Length > 19) {
-                        strDt = strDt[4..];
+                    if (strDt.Contains("UTC")) {
+                        strDt = strDt.Replace("UTC ", "");
+                        dtDt = DateTime.ParseExact(strDt, strFormat, CultureInfo.InvariantCulture);
+                        //dtDt = ConvertTimeFromUtc(dtDt, Local);
+                    } else {
+                        strDt = strDt[..19];
+                        dtDt = DateTime.ParseExact(strDt, strFormat, CultureInfo.InvariantCulture);
                     }
-                    dtDt = DateTime.ParseExact(strDt, strFormat, CultureInfo.CurrentCulture);
-                    dtDt = ConvertTimeFromUtc(dtDt, Local);
                 }
                 dictDt.Add("datetime", dtDt.ToString(StrDtFormat));
                 return dictDt;

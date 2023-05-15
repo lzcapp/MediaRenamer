@@ -75,7 +75,7 @@ A Tool to **Rename** Media Files by Their `Taken Date`.
 
 ```c#
 const string strDtFormat = "yyyy-MM-ddTHH:mm:ssZ";
-var dtUtc = DateTime.ParseExact(strDt, "yyyy:MM:dd HH:mm:ss", CultureInfo.CurrentCulture);
+var dtUtc = DateTime.ParseExact(strDt, "yyyy:MM:dd HH:mm:ss", CultureInfo.InvariantCulture);
 return dtUtc.ToString(strDtFormat);
 ```
 
