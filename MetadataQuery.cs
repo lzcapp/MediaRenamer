@@ -1,6 +1,6 @@
-﻿using MediaInfo;
+﻿using System.Globalization;
+using MediaInfo;
 using MetadataExtractor.Formats.Exif;
-using System.Globalization;
 using static MetadataExtractor.ImageMetadataReader;
 
 namespace MediaRenamer {
