@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using static MediaRenamer.MetadataQuery;
 
 namespace MediaRenamer {
@@ -13,7 +12,7 @@ namespace MediaRenamer {
                 if (dictResult.ContainsKey("error")) {
                     var fileName = file.Name;
                     fileName = fileName[..17];
-                    var dtDt = DateTime.ParseExact(fileName, StrDtFormat, CultureInfo.InvariantCulture);
+                    var dtDt = DateTime.ParseExact(fileName, StrDtFormat, System.Globalization.CultureInfo.InvariantCulture);
                     Rename(file, dtDt.ToString(StrDtFormat));
                     return false;
                 }
@@ -50,14 +49,14 @@ namespace MediaRenamer {
         }
 
         private static string CalculateHash(FileSystemInfo file) {
-            string strSha1;
-            using (var sha1 = new SHA1Managed()) {
+            string strMd5;
+            using (var md5Instance = MD5.Create()) {
                 using (var stream = File.OpenRead(file.FullName)) {
-                    var fileHash = sha1.ComputeHash(stream);
-                    strSha1 = BitConverter.ToString(fileHash).Replace("-", "").ToUpperInvariant();
+                    var fileHash = md5Instance.ComputeHash(stream);
+                    strMd5 = BitConverter.ToString(fileHash).Replace("-", "").ToUpperInvariant();
                 }
             }
-            return strSha1[..3] + strSha1[^3..];
+            return strMd5[..3] + strMd5[^3..^0];
         }
     }
 }
