@@ -87,16 +87,15 @@ namespace MediaRenamer {
 
                 mi.Dispose();
                 DateTime dtDt;
-                int diff;
                 if (isApple) {
                     strDt = strDt[..19];
-                    diff = int.Parse(strDt[19..]);
                     dtDt = DateTime.ParseExact(strDt, strAppleFormat, CultureInfo.InvariantCulture);
                 } else {
                     if (strDt.Contains("UTC")) {
                         strDt = strDt.Replace("UTC ", "");
                         dtDt = DateTime.ParseExact(strDt, strFormat, CultureInfo.InvariantCulture);
-                        //dtDt = ConvertTimeFromUtc(dtDt, Local);
+                        var dtIsUtc = DateTime.SpecifyKind(dtDt, DateTimeKind.Utc);
+                        dtDt = dtIsUtc.ToLocalTime();
                     } else {
                         strDt = strDt[..19];
                         dtDt = DateTime.ParseExact(strDt, strFormat, CultureInfo.InvariantCulture);
