@@ -56,7 +56,7 @@ namespace MediaRenamer {
                     strMd5 = BitConverter.ToString(fileHash).Replace("-", "").ToUpperInvariant();
                 }
             }
-            return strMd5[..3] + strMd5[^3..^0];
+            return strMd5[..3] + strMd5[^3..];
         }
     }
 }
