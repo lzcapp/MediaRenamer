@@ -95,5 +95,5 @@ using (var md5Instance = MD5.Create()) {
         strMD5 = BitConverter.ToString(fileHash).Replace("-", "").ToUpperInvariant();
     }
 }
-return strMD5[..3] + strMD5[^3..^0];
+return strMD5[..3] + strMD5[^3..];
 ```
