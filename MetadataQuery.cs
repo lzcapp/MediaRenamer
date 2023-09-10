@@ -72,6 +72,10 @@ namespace MediaRenamer {
 
                 var strDt = mi.Get(StreamKind.General, 0, "Encoded_Date");
                 if (string.IsNullOrEmpty(strDt)) {
+                    isApple = true;
+                    strDt = mi.Get(StreamKind.General, 0, "com.apple.quicktime.creationdate");
+                }
+                if (string.IsNullOrEmpty(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "Tagged_Date");
                 }
                 if (string.IsNullOrEmpty(strDt)) {
@@ -79,10 +83,6 @@ namespace MediaRenamer {
                 }
                 if (string.IsNullOrEmpty(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "Mastered_Date");
-                }
-                if (string.IsNullOrEmpty(strDt)) {
-                    isApple = true;
-                    strDt = mi.Get(StreamKind.General, 0, "com.apple.quicktime.creationdate");
                 }
 
                 mi.Dispose();
