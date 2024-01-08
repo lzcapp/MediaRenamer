@@ -5,7 +5,7 @@ namespace MediaRenamer {
     public static class FileHandle {
         private const string StrDtFormat = "yyyy.MM.dd_HHmmss";
 
-        internal static bool FileProcess(FileSystemInfo file) {
+        internal static void FileProcess(FileSystemInfo file) {
             try {
                 var dictResult = MetaQuery(file);
 
@@ -14,17 +14,14 @@ namespace MediaRenamer {
                     fileName = fileName[..17];
                     var dtDt = DateTime.ParseExact(fileName, StrDtFormat, System.Globalization.CultureInfo.InvariantCulture);
                     Rename(file, dtDt.ToString(StrDtFormat));
-                    return false;
+                    return;
                 }
 
                 var strDt = dictResult["datetime"];
                 Rename(file, strDt);
             } catch (Exception ex) {
                 Console.WriteLine("[-Error-] FileProcess Failed: " + file.FullName + " | " + ex.Message + ".");
-                return false;
             }
-
-            return true;
         }
 
         private static void Rename(FileSystemInfo file, string strDt) {
