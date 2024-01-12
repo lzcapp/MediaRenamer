@@ -14,13 +14,14 @@ internal static class Program {
 
         string dirInput;
 
-        if (args.Length == 0)
+        if (args.Length == 0) {
             do {
                 Console.Write(">> ");
                 dirInput = Console.ReadLine() ?? string.Empty;
             } while (string.IsNullOrWhiteSpace(dirInput));
-        else
+        } else {
             dirInput = args[0];
+        }
 
         try {
             var diPath = new DirectoryInfo(dirInput);
@@ -40,10 +41,11 @@ internal static class Program {
     private static List<FileSystemInfo> GetFiles(DirectoryInfo dirInfo, List<FileSystemInfo> fileList) {
         var fsInfos = dirInfo.GetFileSystemInfos();
         foreach (var fsInfo in fsInfos)
-            if (fsInfo is DirectoryInfo)
+            if (fsInfo is DirectoryInfo) {
                 GetFiles(new DirectoryInfo(fsInfo.FullName), fileList);
-            else
+            } else {
                 fileList.Add(fsInfo);
+            }
         return fileList;
     }
 }
