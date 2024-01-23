@@ -12,26 +12,38 @@ internal static class Program {
 
         Console.WriteLine();
 
-        string dirInput;
+        string path;
 
         if (args.Length == 0) {
             do {
                 Console.Write(">> ");
-                dirInput = Console.ReadLine() ?? string.Empty;
-            } while (string.IsNullOrWhiteSpace(dirInput));
+                path = Console.ReadLine() ?? string.Empty;
+            } while (string.IsNullOrWhiteSpace(path));
         } else {
-            dirInput = args[0];
+            path = args[0];
         }
 
         try {
-            var diPath = new DirectoryInfo(dirInput);
-            var fileList = new List<FileSystemInfo>();
-            fileList = GetFiles(diPath, fileList);
-            foreach (var file in fileList) FileProcess(file);
+            char[] trimChars = { '"', '\'', ' ' };
+
+            path = path.TrimStart(trimChars).TrimEnd(trimChars).Trim();
+
+            List<FileSystemInfo> fileList = new List<FileSystemInfo>();
+
+            if ((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory) {
+                var diPath = new DirectoryInfo(path);
+                fileList = GetFiles(diPath, fileList);
+            } else {
+                fileList.Add(new FileInfo(path));
+            }
+
+            foreach (FileSystemInfo file in fileList) {
+                FileProcess(file);
+            }
         } catch (DirectoryNotFoundException) {
             Console.WriteLine("[-Error-] The folder does not exist.");
-        } catch (Exception ex) {
-            Console.WriteLine("[-Error-] Main: " + ex.Message);
+        } catch (Exception e) {
+            Console.WriteLine("[-Error-] Main: " + e.Message);
         }
 
         Console.WriteLine("Press Any Key To Exit...");
@@ -40,12 +52,13 @@ internal static class Program {
 
     private static List<FileSystemInfo> GetFiles(DirectoryInfo dirInfo, List<FileSystemInfo> fileList) {
         var fsInfos = dirInfo.GetFileSystemInfos();
-        foreach (var fsInfo in fsInfos)
+        foreach (FileSystemInfo fsInfo in fsInfos) {
             if (fsInfo is DirectoryInfo) {
                 GetFiles(new DirectoryInfo(fsInfo.FullName), fileList);
             } else {
                 fileList.Add(fsInfo);
             }
+        }
         return fileList;
     }
 }
