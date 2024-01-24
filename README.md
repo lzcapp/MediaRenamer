@@ -5,6 +5,9 @@ A Tool to **Rename** Media Files by Their `Taken Date`.
 ## Third-party Usage
 
 - NuGet packages:
+  - **Microsoft-WindowsAPICodePack-Shell**
+    - Nuget: <https://www.nuget.org/packages/Microsoft-WindowsAPICodePack-Shell/>
+    - GitHub: <https://github.com/contre/Windows-API-Code-Pack-1.1>
   - **MetadataExtractor**
     - NuGet: <https://www.nuget.org/packages/MetadataExtractor/>
     - GitHub: <https://github.com/drewnoakes/metadata-extractor-dotnet>
@@ -14,7 +17,7 @@ A Tool to **Rename** Media Files by Their `Taken Date`.
 
 ## Framework Targeting
 
-- .Net Core 3.1
+- .Net 8.0
 
 ## Parameters List
 
