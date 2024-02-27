@@ -28,17 +28,15 @@ internal static class Program {
 
             path = path.TrimStart(trimChars).TrimEnd(trimChars).Trim();
 
-            List<FileSystemInfo> fileList = new List<FileSystemInfo>();
+            var fileList = new List<FileSystemInfo>();
 
             if ((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory) {
                 var diPath = new DirectoryInfo(path);
-                fileList = GetFiles(diPath, fileList);
+                foreach (var file in GetFiles(diPath, fileList)) {
+                    FileProcess(file);
+                }
             } else {
                 fileList.Add(new FileInfo(path));
-            }
-
-            foreach (FileSystemInfo file in fileList) {
-                FileProcess(file);
             }
         } catch (DirectoryNotFoundException) {
             Console.WriteLine("[-Error-] The folder does not exist.");
@@ -52,9 +50,9 @@ internal static class Program {
 
     private static List<FileSystemInfo> GetFiles(DirectoryInfo dirInfo, List<FileSystemInfo> fileList) {
         var fsInfos = dirInfo.GetFileSystemInfos();
-        foreach (FileSystemInfo fsInfo in fsInfos) {
+        foreach (var fsInfo in fsInfos) {
             if (fsInfo is DirectoryInfo) {
-                GetFiles(new DirectoryInfo(fsInfo.FullName), fileList);
+                fileList.AddRange(GetFiles(new DirectoryInfo(fsInfo.FullName), fileList));
             } else {
                 fileList.Add(fsInfo);
             }
