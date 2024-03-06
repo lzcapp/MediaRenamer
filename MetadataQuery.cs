@@ -30,7 +30,7 @@ namespace MediaRenamer
 
         private static DateTime? ShellQuery(string filePath) {
             try {
-                ShellObject? shell = ShellObject.FromParsingName(filePath);
+                var shell = ShellObject.FromParsingName(filePath);
                 var dtDateTaken = shell.Properties.System.Photo.DateTaken.Value;
                 if (dtDateTaken != null) {
                     return dtDateTaken;
@@ -46,13 +46,13 @@ namespace MediaRenamer
             const string strFormat = "yyyy:MM:dd HH:mm:ss";
             try {
                 var directories = ReadMetadata(filePath);
-                ExifIfd0Directory? subdirDt = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
-                var strDt = subdirDt?.GetDescription(ExifDirectoryBase.TagDateTime);
+                var subDt = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
+                var strDt = subDt?.GetDescription(ExifDirectoryBase.TagDateTime);
                 if (string.IsNullOrEmpty(strDt)) {
-                    ExifSubIfdDirectory? subdirDt2 = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
-                    strDt = subdirDt2?.GetDescription(ExifDirectoryBase.TagDateTimeOriginal);
+                    var subDt2 = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
+                    strDt = subDt2?.GetDescription(ExifDirectoryBase.TagDateTimeOriginal);
                     if (string.IsNullOrEmpty(strDt)) {
-                        strDt = subdirDt2?.GetDescription(ExifDirectoryBase.TagDateTimeDigitized);
+                        strDt = subDt2?.GetDescription(ExifDirectoryBase.TagDateTimeDigitized);
                         if (string.IsNullOrEmpty(strDt)) {
                             return null;
                         }
@@ -97,7 +97,7 @@ namespace MediaRenamer
                     if (strDt.Contains("UTC")) {
                         strDt = strDt.Replace("UTC ", "");
                         dtDt = DateTime.ParseExact(strDt, strFormat, CultureInfo.InvariantCulture);
-                        DateTime dtIsUtc = DateTime.SpecifyKind(dtDt, DateTimeKind.Utc);
+                        var dtIsUtc = DateTime.SpecifyKind(dtDt, DateTimeKind.Utc);
                         dtDt = dtIsUtc.ToLocalTime();
                     } else {
                         strDt = strDt[..19];
