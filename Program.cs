@@ -3,7 +3,8 @@ using static MediaRenamer.FileHandle;
 
 namespace MediaRenamer;
 
-internal static class Program {
+internal static class Program
+{
     private static void Main(string[] args) {
         Console.OutputEncoding = Encoding.UTF8;
 
@@ -42,8 +43,8 @@ internal static class Program {
             }
         } catch (DirectoryNotFoundException) {
             Console.WriteLine("[-Error-] The folder does not exist.");
-        } catch (Exception e) {
-            Console.WriteLine("[-Error-] Main: " + e.Message);
+        } catch (Exception) {
+            Console.WriteLine("[-Error-] Main.");
         }
 
         Console.WriteLine("Press Any Key To Exit...");

@@ -22,15 +22,12 @@ namespace MediaRenamer
                     return result.Value.ToString(StrDtFormat);
                 }
                 result = PicQuery(filePath);
-                if (result != null) {
-                    return result.Value.ToString(StrDtFormat);
-                }
-                return string.Empty;
+                return result != null ? result.Value.ToString(StrDtFormat) : string.Empty;
             } catch (Exception) {
                 return string.Empty;
             }
         }
-        
+
         private static DateTime? ShellQuery(string filePath) {
             try {
                 ShellObject? shell = ShellObject.FromParsingName(filePath);
@@ -39,10 +36,7 @@ namespace MediaRenamer
                     return dtDateTaken;
                 }
                 var dtDateEncoded = shell.Properties.System.Media.DateEncoded.Value;
-                if (dtDateEncoded != null) {
-                    return dtDateEncoded;
-                }
-                return null;
+                return dtDateEncoded;
             } catch (Exception) {
                 return null;
             }

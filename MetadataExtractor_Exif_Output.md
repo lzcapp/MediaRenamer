@@ -146,6 +146,7 @@
 ## Type 3
 
 ### JPEG
+
 [JPEG] Compression Type - Baseline
 [JPEG] Data Precision - 8 bits
 [JPEG] Image Height - 3968 pixels
@@ -156,6 +157,7 @@
 [JPEG] Component 3 - Cr component: Quantization table 1, Sampling factors 1 horiz/1 vert
 
 ### JFIF
+
 [JFIF] Version - 1.1
 [JFIF] Resolution Units - inch
 [JFIF] X Resolution - 96 dots
@@ -164,6 +166,7 @@
 [JFIF] Thumbnail Height Pixels - 0
 
 ### Exif IFD0
+
 [Exif IFD0] Image Width - 2976 pixels
 [Exif IFD0] Image Height - 3968 pixels
 [Exif IFD0] Bits Per Sample - 8 8 8 bits/component/pixel
@@ -179,6 +182,7 @@
 [Exif IFD0] Device Setting Description - 105 112 112 0
 
 ### Exif SubIFD
+
 [Exif SubIFD] Document Name -
 [Exif SubIFD] Exposure Time - 0.03 sec
 [Exif SubIFD] F-Number - f/1.6
@@ -222,10 +226,12 @@
 [Exif SubIFD] Subject Distance Range - Unknown
 
 ### Interoperability
+
 [Interoperability] Interoperability Index - Recommended Exif Interoperability Rules (ExifR98)
 [Interoperability] Interoperability Version - 1.00
 
 ### GPS
+
 [GPS] GPS Version ID - 2.200
 [GPS] GPS Latitude Ref - N
 [GPS] GPS Latitude - 29° 52' 40.58"
@@ -238,6 +244,7 @@
 [GPS] GPS Date Stamp - 2019:08:22
 
 ### Exif Thumbnail
+
 [Exif Thumbnail] Image Width - 384 pixels
 [Exif Thumbnail] Image Height - 512 pixels
 [Exif Thumbnail] Compression - JPEG (old-style)
@@ -249,12 +256,14 @@
 [Exif Thumbnail] Thumbnail Length - 36121 bytes
 
 ### File Type
+
 [File Type] Detected File Type Name - JPEG
 [File Type] Detected File Type Long Name - Joint Photographic Experts Group
 [File Type] Detected MIME Type - image/jpeg
 [File Type] Expected File Name Extension - jpg
 
 ### File
+
 [File] File Name - IMG_20190822_194709.jpg
 [File] File Size - 3695736 bytes
 [File] File Modified Date - 周四 8月 22 19:47:11 +08:00 2019

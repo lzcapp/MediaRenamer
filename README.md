@@ -5,15 +5,15 @@ A Tool to **Rename** Media Files by Their `Taken Date`.
 ## Third-party Usage
 
 - NuGet packages:
-  - **Microsoft-WindowsAPICodePack-Shell**
-    - Nuget: <https://www.nuget.org/packages/Microsoft-WindowsAPICodePack-Shell/>
-    - GitHub: <https://github.com/contre/Windows-API-Code-Pack-1.1>
-  - **MetadataExtractor**
-    - NuGet: <https://www.nuget.org/packages/MetadataExtractor/>
-    - GitHub: <https://github.com/drewnoakes/metadata-extractor-dotnet>
-  - **MediaInfo.Wrapper.Core**
-    - NuGet: <https://www.nuget.org/packages/MediaInfo.Wrapper.Core/>
-    - GitHub: <https://github.com/yartat/MP-MediaInfo>
+    - **Microsoft-WindowsAPICodePack-Shell**
+        - Nuget: <https://www.nuget.org/packages/Microsoft-WindowsAPICodePack-Shell/>
+        - GitHub: <https://github.com/contre/Windows-API-Code-Pack-1.1>
+    - **MetadataExtractor**
+        - NuGet: <https://www.nuget.org/packages/MetadataExtractor/>
+        - GitHub: <https://github.com/drewnoakes/metadata-extractor-dotnet>
+    - **MediaInfo.Wrapper.Core**
+        - NuGet: <https://www.nuget.org/packages/MediaInfo.Wrapper.Core/>
+        - GitHub: <https://github.com/yartat/MP-MediaInfo>
 
 ## Framework Targeting
 
@@ -56,13 +56,13 @@ A Tool to **Rename** Media Files by Their `Taken Date`.
   mi.Open(file.FullName);
   ```
 
-  - All Tags:
-    `Console.WriteLine(mi.Inform());`
-  - A Specific Tag:
-    - Encoded Time / Tagged Time:
-      `strDt = MI.Get(StreamKind.Video, 0, "Encoded_Date");`
-    - Recorded Time (in `General Stream`):
-      `strDt = MI.Get(StreamKind.General, 0, "Recorded_Date");`
+    - All Tags:
+      `Console.WriteLine(mi.Inform());`
+    - A Specific Tag:
+        - Encoded Time / Tagged Time:
+          `strDt = MI.Get(StreamKind.Video, 0, "Encoded_Date");`
+        - Recorded Time (in `General Stream`):
+          `strDt = MI.Get(StreamKind.General, 0, "Recorded_Date");`
 
 ### Date/Time
 
@@ -73,8 +73,10 @@ A Tool to **Rename** Media Files by Their `Taken Date`.
 
 `<date>T<time>`
 
-> A single point in time can be represented by concatenating a complete date expression, the letter T as a delimiter, and a valid time expression. For example, "2007-04-05T14:30".
-> If a time zone designator is required, it follows the combined date and time. For example, "2007-04-05T14:30Z" or "2007-04-05T12:30-02:00".
+> A single point in time can be represented by concatenating a complete date expression, the letter T as a delimiter,
+> and a valid time expression. For example, "2007-04-05T14:30".
+> If a time zone designator is required, it follows the combined date and time. For example, "2007-04-05T14:30Z" or "
+> 2007-04-05T12:30-02:00".
 
 ```c#
 const string strDtFormat = "yyyy-MM-ddTHH:mm:ssZ";

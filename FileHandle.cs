@@ -2,8 +2,10 @@
 using System.Text.RegularExpressions;
 using static MediaRenamer.MetadataQuery;
 
-namespace MediaRenamer {
-    public static class FileHandle {
+namespace MediaRenamer
+{
+    public static class FileHandle
+    {
         private const string StrDtFormat = "yyyy.MM.dd_HHmmss";
 
         internal static void FileProcess(FileSystemInfo file) {
@@ -25,8 +27,8 @@ namespace MediaRenamer {
                     return;
                 }
                 Rename(file, result);
-            } catch (Exception e) {
-                Console.WriteLine("[-Error-] FileProcess: " + file.Name + " | " + e.Message);
+            } catch (Exception) {
+                Console.WriteLine("[-Error-] FileProcess: " + file.Name);
             }
         }
 
@@ -47,8 +49,8 @@ namespace MediaRenamer {
             try {
                 fileInfo.MoveTo(strOutName);
                 Console.WriteLine("[-Moved-] " + strOutName);
-            } catch (Exception e) {
-                Console.WriteLine("[-Error-] Rename: " + file.Name + " | " + e.Message);
+            } catch (Exception) {
+                Console.WriteLine("[-Error-] Rename: " + file.Name);
             }
         }
 
