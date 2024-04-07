@@ -2,10 +2,8 @@
 using System.Text.RegularExpressions;
 using static MediaRenamer.MetadataQuery;
 
-namespace MediaRenamer
-{
-    public static class FileHandle
-    {
+namespace MediaRenamer {
+    public static class FileHandle {
         private const string StrDtFormat = "yyyy.MM.dd_HHmmss";
 
         internal static void FileProcess(FileSystemInfo file) {
@@ -13,17 +11,18 @@ namespace MediaRenamer
                 var result = MetaQuery(file);
 
                 if (result == string.Empty) {
-                    string fileName = file.Name.Replace(file.Extension, "");
+                    var fileName = file.Name.Replace(file.Extension, "");
                     if (DateTime.TryParse(fileName, out DateTime dt)) {
                         Rename(file, dt.ToString(StrDtFormat));
                         return;
                     }
                     Match match = new Regex(@"\d{8}_\d{6}").Match(fileName);
-                    if (match.Success) {
-                        DateTime dateTime = DateTime.ParseExact(match.Value, "yyyyMMdd_HHmmss", null);
-                        Rename(file, dateTime.ToString(StrDtFormat));
+                    if (!match.Success) {
                         return;
                     }
+                    DateTime dateTime = DateTime.ParseExact(match.Value, "yyyyMMdd_HHmmss", null);
+                    Rename(file, dateTime.ToString(StrDtFormat));
+                    return;
                     return;
                 }
                 Rename(file, result);
@@ -40,7 +39,7 @@ namespace MediaRenamer
 
             var strOutName = strFullName + "_" + strMd5 + strExt;
 
-            var fileInfo = new FileInfo(file.FullName);
+            FileInfo? fileInfo = new FileInfo(file.FullName);
             if (File.Exists(strOutName)) {
                 Console.WriteLine("[-Exist-] " + strOutName);
                 return;
@@ -56,7 +55,7 @@ namespace MediaRenamer
 
         private static string CalculateHash(FileSystemInfo file) {
             string strMd5;
-            using (var md5Instance = MD5.Create()) {
+            using (MD5? md5Instance = MD5.Create()) {
                 using FileStream stream = File.OpenRead(file.FullName);
                 var fileHash = md5Instance.ComputeHash(stream);
                 strMd5 = BitConverter.ToString(fileHash).Replace("-", "").ToUpperInvariant();
