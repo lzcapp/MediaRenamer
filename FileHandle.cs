@@ -10,21 +10,25 @@ namespace MediaRenamer {
             try {
                 var result = MetaQuery(file);
 
-                if (result == string.Empty) {
-                    var fileName = file.Name.Replace(file.Extension, "");
-                    if (DateTime.TryParse(fileName, out DateTime dt)) {
-                        Rename(file, dt.ToString(StrDtFormat));
+                switch (result) {
+                    case "NOTMEDIA":
+                        return;
+                    case "": {
+                        var fileName = file.Name.Replace(file.Extension, "");
+                        if (DateTime.TryParse(fileName, out DateTime dt)) {
+                            Rename(file, dt.ToString(StrDtFormat));
+                            return;
+                        }
+                        Match match = new Regex(@"\d{8}_\d{6}").Match(fileName);
+                        if (!match.Success) {
+                            return;
+                        }
+                        DateTime dateTime = DateTime.ParseExact(match.Value, "yyyyMMdd_HHmmss", null);
+                        Rename(file, dateTime.ToString(StrDtFormat));
                         return;
                     }
-                    Match match = new Regex(@"\d{8}_\d{6}").Match(fileName);
-                    if (!match.Success) {
-                        return;
-                    }
-                    DateTime dateTime = DateTime.ParseExact(match.Value, "yyyyMMdd_HHmmss", null);
-                    Rename(file, dateTime.ToString(StrDtFormat));
-                    return;
-                    return;
                 }
+
                 Rename(file, result);
             } catch (Exception) {
                 Console.WriteLine("[-Error-] FileProcess: " + file.Name);

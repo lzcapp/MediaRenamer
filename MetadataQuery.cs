@@ -18,6 +18,8 @@ namespace MediaRenamer {
                     if (result != null) {
                         return result.Value.ToString(StrDtFormat);
                     }
+                } else {
+                    return "NOTMEDIA";
                 }
                 result = MediaInfoQuery(filePath);
                 if (result != null) {
