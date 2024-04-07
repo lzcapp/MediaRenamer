@@ -12,6 +12,7 @@ namespace MediaRenamer {
 
                 switch (result) {
                     case "NOTMEDIA":
+                        Console.WriteLine("[-Skipd-] " + file.Name);
                         return;
                     case "": {
                         var fileName = file.Name.Replace(file.Extension, "");
@@ -46,6 +47,7 @@ namespace MediaRenamer {
             FileInfo? fileInfo = new FileInfo(file.FullName);
             if (File.Exists(strOutName)) {
                 Console.WriteLine("[-Exist-] " + strOutName);
+
                 return;
             }
 
