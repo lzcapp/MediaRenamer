@@ -44,10 +44,9 @@ namespace MediaRenamer {
 
             var strOutName = strFullName + "_" + strMd5 + strExt;
 
-            FileInfo? fileInfo = new FileInfo(file.FullName);
+            FileInfo fileInfo = new FileInfo(file.FullName);
             if (File.Exists(strOutName)) {
                 Console.WriteLine("[-Exist-] " + strOutName);
-
                 return;
             }
 
@@ -61,7 +60,7 @@ namespace MediaRenamer {
 
         private static string CalculateHash(FileSystemInfo file) {
             string strMd5;
-            using (MD5? md5Instance = MD5.Create()) {
+            using (MD5 md5Instance = MD5.Create()) {
                 using FileStream stream = File.OpenRead(file.FullName);
                 var fileHash = md5Instance.ComputeHash(stream);
                 strMd5 = BitConverter.ToString(fileHash).Replace("-", "").ToUpperInvariant();
