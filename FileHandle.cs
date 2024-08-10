@@ -2,73 +2,69 @@
 using System.Text.RegularExpressions;
 using static MediaRenamer.MetadataQuery;
 
-namespace MediaRenamer;
+namespace MediaRenamer {
+    public static class FileHandle {
+        private const string StrDtFormat = "yyyy.MM.dd_HHmmss";
 
-public static class FileHandle {
-    private const string StrDtFormat = "yyyy.MM.dd_HHmmss";
+        internal static string FileProcess(string filePath) {
+            FileInfo file = new(filePath);
+            try {
+                string result = MetaQuery(filePath);
 
-    internal static void FileProcess(string filePath) {
-        FileInfo file = new(filePath);
-        try {
-            var result = MetaQuery(filePath);
-
-            switch (result) {
-                case "NOTMEDIA":
-                    //Console.WriteLine("[-Skipd-] " + file.Name);
-                    return;
-                case "":
-                {
-                    var fileName = file.Name.Replace(file.Extension, "");
-                    if (DateTime.TryParse(fileName, out DateTime dt)) {
-                        Rename(file, dt.ToString(StrDtFormat));
-                        return;
+                switch (result) {
+                    case "NOTMEDIA":
+                        return "[SKIPD]";
+                    case "": {
+                        string fileName = file.Name.Replace(file.Extension, "");
+                        if (DateTime.TryParse(fileName, out DateTime dt)) {
+                            return Rename(file, dt.ToString(StrDtFormat));
+                        }
+                        Match match = new Regex(@"\d{8}_\d{6}").Match(fileName);
+                        if (match.Success) {
+                            DateTime dateTime = DateTime.ParseExact(match.Value, "yyyyMMdd_HHmmss", null);
+                            return Rename(file, dateTime.ToString(StrDtFormat));
+                        }
+                        break;
                     }
-                    Match match = new Regex(@"\d{8}_\d{6}").Match(fileName);
-                    if (!match.Success) {
-                        return;
-                    }
-                    DateTime dateTime = DateTime.ParseExact(match.Value, "yyyyMMdd_HHmmss", null);
-                    Rename(file, dateTime.ToString(StrDtFormat));
-                    return;
+                    default:
+                        return Rename(file, result);
                 }
+            } catch (Exception) {
+                return "[ERROR]";
+            }
+            return "[SKIPD]";
+        }
+
+        private static string Rename(FileSystemInfo file, string strDt) {
+            string strPath = file.FullName.Replace(file.Name, "");
+            string strFullName = Path.Combine(strPath, strDt);
+            string strExt = file.Extension.ToLower();
+            string strMd5 = CalculateHash(file);
+
+            string strOutName = strFullName + "_" + strMd5 + strExt;
+
+            if (File.Exists(strOutName)) {
+                return "[EXIST]";
             }
 
-            Rename(file, result);
-        } catch (Exception) {
-            Console.WriteLine("[-Error-] FileProcess: " + file.Name);
-        }
-    }
+            FileInfo fileInfo = new(file.FullName);
 
-    private static void Rename(FileSystemInfo file, string strDt) {
-        var strPath = file.FullName.Replace(file.Name, "");
-        var strFullName = Path.Combine(strPath, strDt);
-        var strExt = file.Extension.ToLower();
-        var strMd5 = CalculateHash(file);
-
-        var strOutName = strFullName + "_" + strMd5 + strExt;
-
-        if (File.Exists(strOutName)) {
-            //Console.WriteLine("[-Exist-] " + strOutName);
-            return;
+            try {
+                fileInfo.MoveTo(strOutName);
+                return "[NAMED]";
+            } catch (Exception) {
+                return "[ERROR]";
+            }
         }
 
-        FileInfo fileInfo = new(file.FullName);
-
-        try {
-            fileInfo.MoveTo(strOutName);
-            Console.WriteLine("[-Moved-] " + strOutName);
-        } catch (Exception) {
-            Console.WriteLine("[-Error-] Rename: " + file.Name);
+        private static string CalculateHash(FileSystemInfo file) {
+            string strMd5;
+            using (MD5 md5Instance = MD5.Create()) {
+                using FileStream stream = File.OpenRead(file.FullName);
+                byte[] fileHash = md5Instance.ComputeHash(stream);
+                strMd5 = BitConverter.ToString(fileHash).Replace("-", "").ToUpperInvariant();
+            }
+            return strMd5[..3] + strMd5[^3..];
         }
-    }
-
-    private static string CalculateHash(FileSystemInfo file) {
-        string strMd5;
-        using (MD5 md5Instance = MD5.Create()) {
-            using FileStream stream = File.OpenRead(file.FullName);
-            var fileHash = md5Instance.ComputeHash(stream);
-            strMd5 = BitConverter.ToString(fileHash).Replace("-", "").ToUpperInvariant();
-        }
-        return strMd5[..3] + strMd5[^3..];
     }
 }
