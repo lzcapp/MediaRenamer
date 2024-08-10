@@ -1,64 +1,71 @@
 ﻿using System.Text;
 using static MediaRenamer.FileHandle;
 
-namespace MediaRenamer {
-    internal static class Program {
-        private static void Main(string[] args) {
-            Console.OutputEncoding = Encoding.UTF8;
+namespace MediaRenamer;
 
-            Console.WriteLine("Copyright \u00a9 2022 RainySummer, All Rights Reserved.");
-            Console.WriteLine(">> A tool for renaming multi-media files.\n");
+internal static class Program {
+    private static void Main(string[] args) {
+        Console.OutputEncoding = Encoding.UTF8;
 
-            Console.WriteLine();
+        Console.WriteLine("Copyright \u00a9 2022 RainySummer, All Rights Reserved.");
+        Console.WriteLine(">> A tool for renaming multi-media files.\n");
 
-            string path;
+        Console.WriteLine();
 
-            if (args.Length == 0) {
-                do {
-                    Console.Write(">> ");
-                    path = Console.ReadLine() ?? string.Empty;
-                } while (string.IsNullOrWhiteSpace(path));
+        string path;
+
+        if (args.Length == 0) {
+            do {
+                Console.Write(">> ");
+                path = Console.ReadLine() ?? string.Empty;
+            } while (string.IsNullOrWhiteSpace(path));
+        } else {
+            path = args[0];
+        }
+
+        try {
+            char[] trimChars = {
+                '"', '\'', ' '
+            };
+
+            path = path.TrimStart(trimChars).TrimEnd(trimChars).Trim();
+
+            if ((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory) {
+                DirectoryInfo diPath = new(path);
+                var fileList = GetFiles(diPath);
+                Console.WriteLine("Totally " + fileList.Count + " Files.");
+                for (var index = 0; index < fileList.Count; index++) {
+                    Console.WriteLine("[" + index + "/" + fileList.Count + "] ");
+                    var filePath = fileList[index];
+                    FileProcess(filePath);
+                }
+            }
+        } catch (DirectoryNotFoundException) {
+            Console.WriteLine("[-Error-] The folder does not exist.");
+        } catch (Exception ex) {
+            Console.WriteLine("[-Error-] Main(): " + ex.Message);
+        }
+
+        Console.WriteLine("Press Any Key To Exit...");
+        Console.ReadKey();
+    }
+
+    private static List<string> GetFiles(DirectoryInfo dirInfo) {
+        if (dirInfo is not { Exists: true }) {
+            throw new DirectoryNotFoundException($"The directory '{dirInfo.FullName}' does not exist.");
+        }
+
+        var fileList = new List<string>();
+
+        var fsInfos = dirInfo.GetFileSystemInfos();
+        foreach (FileSystemInfo fsInfo in fsInfos) {
+            if (fsInfo is DirectoryInfo subDirInfo) {
+                fileList.AddRange(GetFiles(subDirInfo));
             } else {
-                path = args[0];
+                fileList.Add(fsInfo.FullName);
             }
-
-            try {
-                char[] trimChars = {
-                    '"', '\'', ' '
-                };
-
-                path = path.TrimStart(trimChars).TrimEnd(trimChars).Trim();
-
-                var fileList = new List<FileSystemInfo>();
-
-                if ((File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory) {
-                    DirectoryInfo diPath = new DirectoryInfo(path);
-                    foreach (FileSystemInfo file in GetFiles(diPath, fileList)) {
-                        FileProcess(file);
-                    }
-                } else {
-                    fileList.Add(new FileInfo(path));
-                }
-            } catch (DirectoryNotFoundException) {
-                Console.WriteLine("[-Error-] The folder does not exist.");
-            } catch (Exception) {
-                Console.WriteLine("[-Error-] Main.");
-            }
-
-            Console.WriteLine("Press Any Key To Exit...");
-            Console.ReadKey();
         }
 
-        private static List<FileSystemInfo> GetFiles(DirectoryInfo dirInfo, List<FileSystemInfo> fileList) {
-            var fsInfos = dirInfo.GetFileSystemInfos();
-            foreach (FileSystemInfo fsInfo in fsInfos) {
-                if (fsInfo is DirectoryInfo) {
-                    fileList.AddRange(GetFiles(new DirectoryInfo(fsInfo.FullName), fileList));
-                } else {
-                    fileList.Add(fsInfo);
-                }
-            }
-            return fileList;
-        }
+        return fileList;
     }
 }

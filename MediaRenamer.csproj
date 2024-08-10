@@ -15,16 +15,23 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="publish\**" />
-	  <EmbeddedResource Remove="publish\**" />
-	  <None Remove="publish\**" />
+		<Compile Remove="publish\**"/>
+		<EmbeddedResource Remove="publish\**"/>
+		<None Remove="publish\**"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MediaInfo.Wrapper.Core" Version="21.9.3" />
-		<PackageReference Include="MetadataExtractor" Version="2.8.1" />
-		<PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
-		<PackageReference Include="XmpCore" Version="6.1.10.1" />
+		<None Remove="LICENSE"/>
+		<None Remove="MediaInfo_Ouput.md"/>
+		<None Remove="MediaInfo_Parameters_List.md"/>
+		<None Remove="MetadataExtractor_Exif_Output.md"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MediaInfo.Wrapper.Core" Version="21.9.3"/>
+		<PackageReference Include="MetadataExtractor" Version="2.8.1"/>
+		<PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5"/>
+		<PackageReference Include="XmpCore" Version="6.1.10.1"/>
 	</ItemGroup>
 
 </Project>
