@@ -34,9 +34,7 @@ internal static class Program {
                 DirectoryInfo diPath = new(path);
                 var fileList = GetFiles(diPath);
                 Console.WriteLine("Totally " + fileList.Count + " Files.");
-                for (var index = 0; index < fileList.Count; index++) {
-                    Console.WriteLine("[" + index + "/" + fileList.Count + "] ");
-                    var filePath = fileList[index];
+                foreach (var filePath in fileList) {
                     FileProcess(filePath);
                 }
             }
