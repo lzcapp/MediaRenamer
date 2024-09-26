@@ -47,7 +47,7 @@ namespace MediaRenamer {
                 // ignored
             }
 
-            Console.WriteLine("Press Any Key To Exit...");
+            Console.WriteLine(Environment.NewLine + "Press Any Key To Exit...");
             Console.ReadKey();
         }
 

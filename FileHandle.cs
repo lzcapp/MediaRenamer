@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using static MediaRenamer.MetadataQuery;
 
 namespace MediaRenamer {
@@ -39,9 +38,8 @@ namespace MediaRenamer {
             string strPath = file.FullName.Replace(file.Name, "");
             string strFullName = Path.Combine(strPath, strDt);
             string strExt = file.Extension.ToLower();
-            string strMd5 = CalculateHash(file);
 
-            string strOutName = strFullName + "_" + strMd5 + strExt;
+            string strOutName = strFullName + strExt;
 
             if (File.Exists(strOutName)) {
                 return "[EXIST]";
@@ -55,16 +53,6 @@ namespace MediaRenamer {
             } catch (Exception) {
                 return "[ERROR]";
             }
-        }
-
-        private static string CalculateHash(FileSystemInfo file) {
-            string strMd5;
-            using (MD5 md5Instance = MD5.Create()) {
-                using FileStream stream = File.OpenRead(file.FullName);
-                byte[] fileHash = md5Instance.ComputeHash(stream);
-                strMd5 = BitConverter.ToString(fileHash).Replace("-", "").ToUpperInvariant();
-            }
-            return strMd5[..3] + strMd5[^3..];
         }
     }
 }

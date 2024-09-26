@@ -72,18 +72,20 @@ namespace MediaRenamer {
                 IReadOnlyList<Directory> directories = ReadMetadata(filePath);
                 ExifIfd0Directory? subDt = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
                 string? strDt = subDt?.GetDescription(ExifDirectoryBase.TagDateTime);
-                if (string.IsNullOrEmpty(strDt)) {
+                if (IsValidDateTime(strDt)) {
                     ExifSubIfdDirectory? subDt2 = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
                     strDt = subDt2?.GetDescription(ExifDirectoryBase.TagDateTimeOriginal);
-                    if (string.IsNullOrEmpty(strDt)) {
+                    if (IsValidDateTime(strDt)) {
                         strDt = subDt2?.GetDescription(ExifDirectoryBase.TagDateTimeDigitized);
-                        if (string.IsNullOrEmpty(strDt)) {
+                        if (IsValidDateTime(strDt)) {
                             return null;
                         }
                     }
                 }
-                if (strDt.Length > 19) {
+                if (strDt is { Length: > 19 }) {
                     strDt = strDt[..19];
+                } else {
+                    return null;
                 }
                 return DateTime.ParseExact(strDt, strFormat, CultureInfo.InvariantCulture);
             } catch (Exception) {
@@ -103,20 +105,20 @@ namespace MediaRenamer {
                 mi.Open(filePath);
 
                 string? strDt = string.Empty;
-                if (string.IsNullOrEmpty(strDt)) {
+                if (IsValidDateTime(strDt)) {
                     isApple = true;
                     strDt = mi.Get(StreamKind.General, 0, "com.apple.quicktime.creationdate");
                 }
-                if (string.IsNullOrEmpty(strDt)) {
+                if (IsValidDateTime(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "Encoded_Date");
                 }
-                if (string.IsNullOrEmpty(strDt)) {
+                if (IsValidDateTime(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "Tagged_Date");
                 }
-                if (string.IsNullOrEmpty(strDt)) {
+                if (IsValidDateTime(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "Recorded_Date");
                 }
-                if (string.IsNullOrEmpty(strDt)) {
+                if (IsValidDateTime(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "Mastered_Date");
                 }
 
@@ -142,6 +144,19 @@ namespace MediaRenamer {
             } catch (Exception) {
                 return null;
             }
+        }
+
+        private static bool IsValidDateTime(string? strDt) {
+            if (strDt is null) {
+                return false;
+            }
+            bool isNullOrEmpty = string.IsNullOrEmpty(strDt);
+            if (isNullOrEmpty) {
+                return false;
+            }
+            bool isUnixDate = strDt.Contains("1970");
+            return !isUnixDate;
+
         }
     }
 }
