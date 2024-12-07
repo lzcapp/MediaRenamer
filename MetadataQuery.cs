@@ -34,7 +34,7 @@ namespace MediaRenamer {
                 if (result != null) {
                     return result.Value.ToString(StrDtFormat);
                 }
-                result = ShellQuery(filePath);
+                //result = ShellQuery(filePath);
                 return result != null ? result.Value.ToString(StrDtFormat) : string.Empty;
             } catch (Exception) {
                 return string.Empty;
@@ -71,21 +71,19 @@ namespace MediaRenamer {
             try {
                 IReadOnlyList<Directory> directories = ReadMetadata(filePath);
                 ExifIfd0Directory? subDt = directories.OfType<ExifIfd0Directory>().FirstOrDefault();
-                string? strDt = subDt?.GetDescription(ExifDirectoryBase.TagDateTime);
-                if (IsValidDateTime(strDt)) {
+                string strDt = subDt?.GetDescription(ExifDirectoryBase.TagDateTime) ?? string.Empty;
+                if (!IsValidDateTime(strDt)) {
                     ExifSubIfdDirectory? subDt2 = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
-                    strDt = subDt2?.GetDescription(ExifDirectoryBase.TagDateTimeOriginal);
-                    if (IsValidDateTime(strDt)) {
-                        strDt = subDt2?.GetDescription(ExifDirectoryBase.TagDateTimeDigitized);
-                        if (IsValidDateTime(strDt)) {
+                    strDt = subDt2?.GetDescription(ExifDirectoryBase.TagDateTimeOriginal) ?? string.Empty;
+                    if (!IsValidDateTime(strDt)) {
+                        strDt = subDt2?.GetDescription(ExifDirectoryBase.TagDateTimeDigitized) ?? string.Empty;
+                        if (!IsValidDateTime(strDt)) {
                             return null;
                         }
                     }
                 }
                 if (strDt is { Length: > 19 }) {
                     strDt = strDt[..19];
-                } else {
-                    return null;
                 }
                 return DateTime.ParseExact(strDt, strFormat, CultureInfo.InvariantCulture);
             } catch (Exception) {
@@ -105,20 +103,21 @@ namespace MediaRenamer {
                 mi.Open(filePath);
 
                 string? strDt = string.Empty;
-                if (IsValidDateTime(strDt)) {
-                    isApple = true;
+                if (!IsValidDateTime(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "com.apple.quicktime.creationdate");
                 }
-                if (IsValidDateTime(strDt)) {
+                if (!IsValidDateTime(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "Encoded_Date");
+                } else {
+                    isApple = true;
                 }
-                if (IsValidDateTime(strDt)) {
+                if (!IsValidDateTime(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "Tagged_Date");
                 }
-                if (IsValidDateTime(strDt)) {
+                if (!IsValidDateTime(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "Recorded_Date");
                 }
-                if (IsValidDateTime(strDt)) {
+                if (!IsValidDateTime(strDt)) {
                     strDt = mi.Get(StreamKind.General, 0, "Mastered_Date");
                 }
 
@@ -130,12 +129,23 @@ namespace MediaRenamer {
                         CultureInfo.InvariantCulture);
                     dtDt = dateTimeOffset.ToOffset(TimeSpan.FromHours(8)).DateTime;
                 } else if (strDt.Length > 19) {
-                    DateTimeOffset dateTimeOffset = DateTimeOffset.ParseExact(
+                    bool isParsed = DateTimeOffset.TryParseExact(
                         strDt,
                         strFormatUtc,
                         CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeUniversal);
-                    dtDt = dateTimeOffset.ToOffset(TimeSpan.FromHours(8)).DateTime;
+                        DateTimeStyles.AssumeUniversal,
+                        out DateTimeOffset dateTimeOffset);
+                    if (!isParsed) {
+                        strDt = strDt.Replace("UTC", "");
+                        isParsed = DateTimeOffset.TryParse(
+                            strDt,
+                            out dateTimeOffset);
+                    }
+                    if (isParsed) {
+                        dtDt = dateTimeOffset.ToOffset(TimeSpan.FromHours(8)).DateTime;
+                    } else {
+                        throw new Exception();
+                    }
                 } else {
                     strDt = strDt[..19];
                     dtDt = DateTime.ParseExact(strDt, strFormat, CultureInfo.InvariantCulture);
